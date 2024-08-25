@@ -1,11 +1,11 @@
-﻿namespace RR.Common.Models;
+﻿namespace RR.Data.DataBaseObjects;
 
 [Table(nameof(Receipt))]
 public class Receipt
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int? Id { get; set; } = null;
+    public int Id { get; set; }
     int VendorId { get; set; }
     [JsonIgnore]
     public virtual Vendor Vendor { get; set; }

@@ -1,4 +1,4 @@
-﻿namespace RR.Data.DBOs;
+﻿namespace RR.Data.DataBaseObjects;
 
 public class User : IdentityUser
 {
