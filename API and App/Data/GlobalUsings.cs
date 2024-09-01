@@ -1,5 +1,10 @@
-﻿global using System.ComponentModel.DataAnnotations.Schema;
-global using System.ComponentModel.DataAnnotations;
-global using System.Text.Json.Serialization;
-global using System.Text.Json;
+﻿global using Microsoft.AspNetCore.Identity;
+global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore;
 global using RR.Common.Models;
+global using RR.Data.DataBaseObjects;
+global using RR.Data.Interfaces;
+global using System.ComponentModel.DataAnnotations;
+global using System.ComponentModel.DataAnnotations.Schema;
+global using System.Text.Json;
+global using System.Text.Json.Serialization;
