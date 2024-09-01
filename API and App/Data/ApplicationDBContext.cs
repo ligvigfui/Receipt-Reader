@@ -33,5 +33,16 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 .HasForeignKey(ur => ur.RoleId)
                 .IsRequired();
         });
+
+        // Iterate over all entity types in the model
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            // Iterate over all foreign keys in the entity type
+            foreach (var foreignKey in entityType.GetForeignKeys())
+            {
+                // Set the delete behavior to Restrict
+                foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
+            }
+        }
     }
 }

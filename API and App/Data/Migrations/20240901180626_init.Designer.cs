@@ -12,7 +12,7 @@ using RR.Data;
 namespace RR.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240901174421_init")]
+    [Migration("20240901180626_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -355,7 +355,7 @@ namespace RR.Data.Migrations
                     b.HasOne("RR.Data.DataBaseObjects.RoleDBO", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -364,7 +364,7 @@ namespace RR.Data.Migrations
                     b.HasOne("RR.Data.DataBaseObjects.UserDBO", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -373,7 +373,7 @@ namespace RR.Data.Migrations
                     b.HasOne("RR.Data.DataBaseObjects.UserDBO", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -382,7 +382,7 @@ namespace RR.Data.Migrations
                     b.HasOne("RR.Data.DataBaseObjects.UserDBO", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -391,13 +391,13 @@ namespace RR.Data.Migrations
                     b.HasOne("RR.Data.DataBaseObjects.UserDBO", "User")
                         .WithMany("Receipts")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("RR.Data.DataBaseObjects.VendorDBO", "Vendor")
                         .WithMany("Receipts")
                         .HasForeignKey("VendorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -410,13 +410,13 @@ namespace RR.Data.Migrations
                     b.HasOne("RR.Data.DataBaseObjects.RoleDBO", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("RR.Data.DataBaseObjects.UserDBO", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Role");
@@ -429,13 +429,13 @@ namespace RR.Data.Migrations
                     b.HasOne("RR.Data.DataBaseObjects.AddressDBO", "Address")
                         .WithMany()
                         .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("RR.Data.DataBaseObjects.VendorHQDBO", "HQ")
                         .WithMany("VendorDBOs")
                         .HasForeignKey("HQId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Address");
@@ -448,7 +448,7 @@ namespace RR.Data.Migrations
                     b.HasOne("RR.Data.DataBaseObjects.AddressDBO", "Address")
                         .WithMany()
                         .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Address");
