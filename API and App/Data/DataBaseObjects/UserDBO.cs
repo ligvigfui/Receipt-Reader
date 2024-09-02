@@ -3,6 +3,6 @@
 [Table(nameof(UserDBO))]
 public class UserDBO : IdentityUser
 {
-    public List<ReceiptDBO> Receipts { get; set; }
-    public List<UserRoleDBO> UserRoles { get; set; }
+    public virtual List<ReceiptDBO> Receipts { get; set; }
+    public virtual List<UserRoleDBO> UserRoles { get; set; }
 }

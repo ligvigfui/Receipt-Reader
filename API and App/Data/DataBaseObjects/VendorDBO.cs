@@ -8,10 +8,10 @@ public class VendorDBO
     public int Id { get; set; }
     public virtual List<ReceiptDBO> Receipts { get; set; } = [];
     public int HQId { get; set; }
-    public  VendorHQDBO HQ { get; set; }
+    public virtual VendorHQDBO HQ { get; set; }
     public string Name { get; set; }
     public int AddressId { get; set; }
-    public AddressDBO Address { get; set; }
+    public virtual AddressDBO Address { get; set; }
     public string TaxNumber { get; set; }
 
     public static implicit operator VendorDBO(Vendor vendor) => new()

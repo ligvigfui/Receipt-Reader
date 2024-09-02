@@ -3,5 +3,5 @@
 [Table(nameof(RoleDBO))]
 public class RoleDBO : IdentityRole
 {
-    public List<UserRoleDBO> UserRoles { get; set; }
+    public virtual List<UserRoleDBO> UserRoles { get; set; }
 }

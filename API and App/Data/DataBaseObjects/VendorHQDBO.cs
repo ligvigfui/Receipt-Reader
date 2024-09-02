@@ -6,10 +6,11 @@ public class VendorHQDBO
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
-    public List<VendorDBO> VendorDBOs { get; set; } = [];
+    public virtual List<VendorDBO> VendorDBOs { get; set; } = [];
     public string Name { get; set; }
+    [ForeignKey(nameof(AddressDBO))]
     public int AddressId { get; set; }
-    public AddressDBO Address { get; set; }
+    public virtual AddressDBO Address { get; set; }
 
     public static implicit operator VendorHQDBO(VendorHQ vendorHQ) => new()
     {

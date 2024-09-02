@@ -3,6 +3,6 @@
 [Table(nameof(UserRoleDBO))]
 public class UserRoleDBO : IdentityUserRole<string>
 {
-    public UserDBO User { get; set; }
-    public RoleDBO Role { get; set; }
+    public virtual UserDBO User { get; set; }
+    public virtual RoleDBO Role { get; set; }
 }
