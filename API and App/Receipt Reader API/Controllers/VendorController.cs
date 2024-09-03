@@ -3,7 +3,7 @@
 [ApiController]
 [Route("[controller]")]
 public class VendorController(
-    ILogger<VendorController> logger,
+    //ILogger<VendorController> logger,
     IVendorRepository vendorRepository
 ) : ControllerBase
 {

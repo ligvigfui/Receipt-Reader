@@ -1,12 +1,14 @@
 ﻿namespace RR.Data.Repository;
 
-public class AddressRepository(ApplicationDbContext context)
+public class AddressRepository(ApplicationDbContext context) : IAddressRepository
 {
-    public async Task<int> CreateAddressAsync(AddressDBO address)
+    public async Task<AddressDBO> CreateAddressAsync(AddressDBO address)
     {
         await context.Addresses.AddAsync(address);
         await context.SaveChangesAsync();
-        return address.Id;
+        return address;
     }
 
+    public async Task<AddressDBO?> GetAddressByIdAsync(int addressId) =>
+        await context.Addresses.FirstOrDefaultAsync(address => address.Id == addressId);
 }
