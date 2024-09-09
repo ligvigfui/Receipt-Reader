@@ -8,12 +8,13 @@ public class AddressController(
 ) : ControllerBase
 {
     [HttpGet]
-    [AuthorizeRolesAttribute(Role.Admin)]
+    [AuthorizeRoles(Role.User)]
     public async Task<IActionResult> Get([FromQuery][Required] int id) =>
         Ok(await addressRepositry.GetAddressByIdAsync(id));
 
     [HttpPost]
     [Route(nameof(Create))]
+    [AuthorizeRoles(Role.User)]
     public async Task<IActionResult> Create([FromBody] Address address)
     {
         var addressDBO = await addressRepositry.CreateAddressAsync(address);

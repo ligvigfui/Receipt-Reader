@@ -6,7 +6,12 @@ public static class AuthenticationConfiguration
     {
         var jwtConfiguration = builder.Configuration.GetSection("JWT").Get<JWTConfiguration>()!;
 
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+
+        builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
             .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -20,6 +25,13 @@ public static class AuthenticationConfiguration
 				    ClockSkew = TimeSpan.Zero,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfiguration.Key))
                 };
+            });
+
+        builder.Services.AddAuthorizationBuilder()
+            .AddPolicy("JWT", policy =>
+            {
+                policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                policy.RequireAuthenticatedUser();
             });
 
         return builder;

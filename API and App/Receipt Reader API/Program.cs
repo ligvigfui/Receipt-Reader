@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel((context, options) =>
@@ -9,12 +10,18 @@ builder.WebHost.ConfigureKestrel((context, options) =>
         listenOptions.UseHttps();
     });
 });
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.ConfigureAppSettings()
     .ConfigureDatabase()
-    .ConfigureAuthentication();
+    .ConfigureAuthentication()
+    .ConfigureSwagger();
 builder.Services.ConfigureDependencyInjection();
 GlobalErrorResponse.IsDevelopment = builder.Environment.IsDevelopment();
 builder.Services.AddAuthorizationBuilder()
@@ -29,8 +36,22 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapControllers();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseExceptionHandler("/error");
 app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapControllers();
+
+//Auto migration
+using var serviceScope = (app as IApplicationBuilder).ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
+using var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+await context!.Database.MigrateAsync();
+
+if (!context.Users.Any())
+    await app.SeedEssentialData(context);
+
+var cultureInfo = CultureInfo.InvariantCulture;
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
 app.Run();

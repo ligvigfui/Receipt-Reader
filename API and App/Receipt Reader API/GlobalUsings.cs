@@ -15,4 +15,5 @@ global using RR.Data.Interfaces;
 global using RR.Service.Interfaces;
 global using System.ComponentModel.DataAnnotations;
 global using System.Text;
+global using System.Text.Json.Serialization;
 
