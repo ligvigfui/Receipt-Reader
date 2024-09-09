@@ -8,6 +8,7 @@ public class AddressController(
 ) : ControllerBase
 {
     [HttpGet]
+    [AuthorizeRolesAttribute(Role.Admin)]
     public async Task<IActionResult> Get([FromQuery][Required] int id) =>
         Ok(await addressRepositry.GetAddressByIdAsync(id));
 

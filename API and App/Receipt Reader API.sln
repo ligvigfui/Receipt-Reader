@@ -21,6 +21,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RR.Configuration", "Configuration\RR.Configuration.csproj", "{4E1E6C0D-892C-4B73-B52C-E52FA6B61B17}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RR.Service", "RR.Service\RR.Service.csproj", "{A8AD6969-5F54-4B04-B66F-C040CEF845F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{D428F764-4D72-4095-ACD8-F99C2A22F373}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D428F764-4D72-4095-ACD8-F99C2A22F373}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D428F764-4D72-4095-ACD8-F99C2A22F373}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E1E6C0D-892C-4B73-B52C-E52FA6B61B17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E1E6C0D-892C-4B73-B52C-E52FA6B61B17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E1E6C0D-892C-4B73-B52C-E52FA6B61B17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E1E6C0D-892C-4B73-B52C-E52FA6B61B17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8AD6969-5F54-4B04-B66F-C040CEF845F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8AD6969-5F54-4B04-B66F-C040CEF845F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8AD6969-5F54-4B04-B66F-C040CEF845F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8AD6969-5F54-4B04-B66F-C040CEF845F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

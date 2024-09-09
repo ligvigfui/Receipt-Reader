@@ -8,7 +8,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<VendorDBO> Vendors { get; set; }
     public DbSet<VendorHQDBO> VendorHQs { get; set; }
 
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -17,6 +16,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("UserClaimDBO");
         modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("UserLoginDBO");
         modelBuilder.Entity<IdentityUserToken<string>>().ToTable("UserTokenDBO");
+        modelBuilder.Entity<UserDBO>().ToTable(nameof(UserDBO));
+        modelBuilder.Entity<RoleDBO>().ToTable(nameof(RoleDBO));
+        modelBuilder.Entity<UserRoleDBO>().ToTable(nameof(UserRoleDBO));
 
         modelBuilder.Entity<UserDBO>(u =>
         {

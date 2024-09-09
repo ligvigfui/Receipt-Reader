@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RR.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -33,7 +33,7 @@ namespace RR.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetRoles",
+                name: "RoleDBO",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -43,11 +43,11 @@ namespace RR.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                    table.PrimaryKey("PK_RoleDBO", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
+                name: "UserDBO",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -68,7 +68,7 @@ namespace RR.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.PrimaryKey("PK_UserDBO", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -105,33 +105,9 @@ namespace RR.Data.Migrations
                 {
                     table.PrimaryKey("PK_RoleClaimDBO", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RoleClaimDBO_AspNetRoles_RoleId",
+                        name: "FK_RoleClaimDBO_RoleDBO_RoleId",
                         column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserRoles",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
-                    table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "RoleDBO",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -150,9 +126,9 @@ namespace RR.Data.Migrations
                 {
                     table.PrimaryKey("PK_UserClaimDBO", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserClaimDBO_AspNetUsers_UserId",
+                        name: "FK_UserClaimDBO_UserDBO_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "UserDBO",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -170,9 +146,33 @@ namespace RR.Data.Migrations
                 {
                     table.PrimaryKey("PK_UserLoginDBO", x => new { x.LoginProvider, x.ProviderKey });
                     table.ForeignKey(
-                        name: "FK_UserLoginDBO_AspNetUsers_UserId",
+                        name: "FK_UserLoginDBO_UserDBO_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "UserDBO",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserRoleDBO",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRoleDBO", x => new { x.UserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_UserRoleDBO_RoleDBO_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "RoleDBO",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UserRoleDBO_UserDBO_UserId",
+                        column: x => x.UserId,
+                        principalTable: "UserDBO",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -190,9 +190,9 @@ namespace RR.Data.Migrations
                 {
                     table.PrimaryKey("PK_UserTokenDBO", x => new { x.UserId, x.LoginProvider, x.Name });
                     table.ForeignKey(
-                        name: "FK_UserTokenDBO_AspNetUsers_UserId",
+                        name: "FK_UserTokenDBO_UserDBO_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "UserDBO",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -240,9 +240,9 @@ namespace RR.Data.Migrations
                 {
                     table.PrimaryKey("PK_ReceiptDBO", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ReceiptDBO_AspNetUsers_UserId",
+                        name: "FK_ReceiptDBO_UserDBO_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "UserDBO",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -252,30 +252,6 @@ namespace RR.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "RoleNameIndex",
-                table: "AspNetRoles",
-                column: "NormalizedName",
-                unique: true,
-                filter: "[NormalizedName] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserRoles_RoleId",
-                table: "AspNetUserRoles",
-                column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "EmailIndex",
-                table: "AspNetUsers",
-                column: "NormalizedEmail");
-
-            migrationBuilder.CreateIndex(
-                name: "UserNameIndex",
-                table: "AspNetUsers",
-                column: "NormalizedUserName",
-                unique: true,
-                filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ReceiptDBO_UserId",
@@ -293,14 +269,38 @@ namespace RR.Data.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
+                name: "RoleNameIndex",
+                table: "RoleDBO",
+                column: "NormalizedName",
+                unique: true,
+                filter: "[NormalizedName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserClaimDBO_UserId",
                 table: "UserClaimDBO",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "EmailIndex",
+                table: "UserDBO",
+                column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "UserNameIndex",
+                table: "UserDBO",
+                column: "NormalizedUserName",
+                unique: true,
+                filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserLoginDBO_UserId",
                 table: "UserLoginDBO",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRoleDBO_RoleId",
+                table: "UserRoleDBO",
+                column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_VendorDBO_AddressId",
@@ -322,9 +322,6 @@ namespace RR.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AspNetUserRoles");
-
-            migrationBuilder.DropTable(
                 name: "ReceiptDBO");
 
             migrationBuilder.DropTable(
@@ -337,16 +334,19 @@ namespace RR.Data.Migrations
                 name: "UserLoginDBO");
 
             migrationBuilder.DropTable(
+                name: "UserRoleDBO");
+
+            migrationBuilder.DropTable(
                 name: "UserTokenDBO");
 
             migrationBuilder.DropTable(
                 name: "VendorDBO");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "RoleDBO");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "UserDBO");
 
             migrationBuilder.DropTable(
                 name: "VendorHQDBO");

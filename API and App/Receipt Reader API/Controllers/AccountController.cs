@@ -1,19 +1,35 @@
-﻿using Microsoft.AspNetCore.Identity.Data;
-
-namespace RR.API.Controllers;
+﻿namespace RR.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
 public class AccountController(
     //ILogger<AccountController> logger,
-    IUserRepository userRepo
+    ISecurityService securityService
 ) : ControllerBase
 {
-    //[HttpPost]
-    //[Route(nameof(Register))]
-    //public async Task<IActionResult> Register([FromBody] RegisterRequest request)
-    //{
-    //    var user = await userRepo.RegisterAsync(request);
-    //    return CreatedAtAction(nameof(Register), user);
-    //}
+    [HttpPost]
+    [Route(nameof(Register))]
+    public async Task<IActionResult> Register([FromBody] Login login)
+    {
+        var token = await securityService.RegisterAsync(login);
+        return CreatedAtAction(nameof(Register), token);
+    }
+
+    [HttpPost]
+    [Route(nameof(Login))]
+    public async Task<IActionResult> Login([FromBody] Login login)
+    {
+        var token = await securityService.LoginAsync(login);
+        return CreatedAtAction(nameof(Login), token);
+    }
+
+    [HttpPost]
+    [Route(nameof(RefreshToken))]
+    public async Task<IActionResult> RefreshToken()
+    {
+        var token = await securityService.RefreshTokenAsync();
+        return CreatedAtAction(nameof(RefreshToken), token);
+    }
+
+
 }

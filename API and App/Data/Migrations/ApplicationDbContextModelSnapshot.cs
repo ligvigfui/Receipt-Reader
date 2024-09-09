@@ -18,6 +18,9 @@ namespace RR.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -211,7 +214,7 @@ namespace RR.Data.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("RoleDBO", (string)null);
                 });
 
             modelBuilder.Entity("RR.Data.DataBaseObjects.UserDBO", b =>
@@ -276,7 +279,7 @@ namespace RR.Data.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("UserDBO", (string)null);
                 });
 
             modelBuilder.Entity("RR.Data.DataBaseObjects.UserRoleDBO", b =>
@@ -291,7 +294,7 @@ namespace RR.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
+                    b.ToTable("UserRoleDBO", (string)null);
                 });
 
             modelBuilder.Entity("RR.Data.DataBaseObjects.VendorDBO", b =>

@@ -10,11 +10,15 @@ builder.WebHost.ConfigureKestrel((context, options) =>
     });
 });
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.ConfigureDatabase();
+builder.ConfigureAppSettings()
+    .ConfigureDatabase()
+    .ConfigureAuthentication();
 builder.Services.ConfigureDependencyInjection();
+GlobalErrorResponse.IsDevelopment = builder.Environment.IsDevelopment();
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("RequireAdministratorRole", policy => policy.RequireRole(Role.Admin.ToString()));
 
 var app = builder.Build();
 
@@ -25,6 +29,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseExceptionHandler("/error");
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
