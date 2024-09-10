@@ -19,8 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Configuration\RR.Configuration.csproj" />
-    <ProjectReference Include="..\Models\RR.Common.csproj" />
+    <ProjectReference Include="..\RR.Configuration\RR.Configuration.csproj" />
+    <ProjectReference Include="..\RR.Common\RR.Common.csproj" />
   </ItemGroup>
 
 </Project>
