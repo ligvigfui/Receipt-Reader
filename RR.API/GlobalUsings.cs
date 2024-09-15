@@ -4,6 +4,7 @@ global using Microsoft.AspNetCore.Identity;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.IdentityModel.Tokens;
+global using NetCore.AutoRegisterDi;
 global using RR.API;
 global using RR.API.Configuration;
 global using RR.Common.IntermediateModels;
@@ -16,4 +17,3 @@ global using RR.Service.Interfaces;
 global using System.ComponentModel.DataAnnotations;
 global using System.Text;
 global using System.Text.Json.Serialization;
-

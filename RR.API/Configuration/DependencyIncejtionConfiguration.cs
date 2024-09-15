@@ -1,5 +1,4 @@
-﻿using NetCore.AutoRegisterDi;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace RR.API.Configuration;
 
@@ -14,14 +13,13 @@ public static class DependencyIncejtionConfiguration
             Assembly.GetAssembly(typeof(IUserRepository))
         };
 
-        List<Type> typesToExclude =
-        [
-            typeof(AuthorizeRolesAttribute)
-        ];
-
+        /*
+         * [RegisterAsSingleton]
+         * [RegisterAsTransient]
+         * [RegisterAsScoped]
+         * [DoNotAutoRegister]
+         */
         services.RegisterAssemblyPublicNonGenericClasses(assembliesToScan)
-                .Where(c => !typesToExclude.Contains(c))
-                //.IgnoreThisInterface<IMessage>()
                 .AsPublicImplementedInterfaces();
 
         services.AddHttpContextAccessor();

@@ -1,5 +1,6 @@
-﻿namespace RR.App;
+﻿namespace RR.App.Views;
 
+[RegisterAsSingleton]
 public partial class MainPage : ContentPage
 {
     int count = 0;
@@ -9,7 +10,7 @@ public partial class MainPage : ContentPage
         InitializeComponent();
     }
 
-    private void OnCounterClicked(object sender, EventArgs e)
+    void OnCounterClicked(object sender, EventArgs e)
     {
         count++;
 
@@ -20,4 +21,7 @@ public partial class MainPage : ContentPage
 
         SemanticScreenReader.Announce(CounterBtn.Text);
     }
+
+    async void OnLoginButtonClicked(object sender, EventArgs e) =>
+        await Shell.Current.GoToAsync(nameof(LoginPage));
 }

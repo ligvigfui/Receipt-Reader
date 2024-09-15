@@ -1,5 +1,6 @@
 ﻿namespace RR.API;
 
+[DoNotAutoRegister]
 public class AuthorizeRolesAttribute : AuthorizeAttribute
 {
     public AuthorizeRolesAttribute(params Role[] roles)

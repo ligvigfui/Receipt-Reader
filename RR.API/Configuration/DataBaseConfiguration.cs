@@ -9,6 +9,7 @@ public static class DataBaseConfiguration
             options.UseLazyLoadingProxies()
                 .UseSqlServer(connectionString, options =>
                 {
+					options.MigrationsAssembly("RR.Data");
                     options.EnableRetryOnFailure();
                     options.CommandTimeout(300);
                 })

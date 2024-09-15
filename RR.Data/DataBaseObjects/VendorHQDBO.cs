@@ -8,7 +8,6 @@ public class VendorHQDBO
     public int Id { get; set; }
     public virtual List<VendorDBO> VendorDBOs { get; set; } = [];
     public string Name { get; set; }
-    [ForeignKey(nameof(AddressDBO))]
     public int AddressId { get; set; }
     public virtual AddressDBO Address { get; set; }
 
