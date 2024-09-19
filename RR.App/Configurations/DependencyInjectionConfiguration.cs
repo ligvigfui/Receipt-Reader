@@ -17,7 +17,7 @@ public static class DependencyInjectionConfiguration
         builder.Services.AddSingleton<AppShell>();
         builder.Services.AddSingleton<MainPage>();
         builder.Services.AddSingleton<LoginPage>();
-
+        builder.Services.AddSingleton<LoginViewModel>();
 
         var apiHttpClientSettings = builder.Configuration.GetSection("ApiHttpClient").Get<ApiHttpClientSettings>()!;
         builder.Services.AddHttpClient(HttpClientConstants.ApiClient, client =>

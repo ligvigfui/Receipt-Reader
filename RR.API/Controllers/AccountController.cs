@@ -12,7 +12,7 @@ public class AccountController(
     public async Task<IActionResult> Register([FromBody] Login login)
     {
         var token = await securityService.RegisterAsync(login);
-        return CreatedAtAction(nameof(Register), new { Token = token });
+        return Ok(new AuthResponse{ Token = token });
     }
 
     [HttpPost]
@@ -20,7 +20,7 @@ public class AccountController(
     public async Task<IActionResult> Login([FromBody] Login login)
     {
         var token = await securityService.LoginAsync(login);
-        return CreatedAtAction(nameof(Login), new { Token = token });
+        return Ok(new AuthResponse{ Token = token });
     }
 
     [HttpPost]
