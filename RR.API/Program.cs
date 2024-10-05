@@ -27,6 +27,14 @@ GlobalErrorResponse.IsDevelopment = builder.Environment.IsDevelopment();
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("RequireAdministratorRole", policy => policy.RequireRole(Role.Admin.ToString()));
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder => builder.WithOrigins("http://localhost:5173")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod());
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -38,6 +46,7 @@ if (app.Environment.IsDevelopment())
 
 app.MapControllers();
 app.UseAuthentication();
+app.UseCors("AllowSpecificOrigin");
 app.UseAuthorization();
 app.UseExceptionHandler("/error");
 app.UseHttpsRedirection();
