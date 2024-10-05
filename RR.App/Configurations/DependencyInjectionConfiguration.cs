@@ -13,9 +13,9 @@ public static class DependencyInjectionConfiguration
 
         //builder.Services.RegisterAssemblyPublicNonGenericClasses(assembliesToScan)
         //        .AsPublicImplementedInterfaces();
-        builder.Services.AddSingleton<Views.App>();
-        builder.Services.AddSingleton<AppShell>();
         builder.Services.AddSingleton<MainPage>();
+        builder.Services.AddSingleton<MainViewModel>();
+        
         builder.Services.AddSingleton<LoginPage>();
         builder.Services.AddSingleton<LoginViewModel>();
 

@@ -11,7 +11,6 @@ public static class AppSettingsConfiguration
                     .AddJsonStream(stream)
                     .Build();
 
-
         builder.Configuration.AddConfiguration(config);
 
         void Configure<T>(string section) where T : class =>
