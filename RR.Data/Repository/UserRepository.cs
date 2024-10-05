@@ -13,8 +13,11 @@ public class UserRepository(
         };
         var result = await userManager.CreateAsync(newUser, user.Password);
         if (!result.Succeeded)
-            throw new Exception("Failed to create user");
-        
+            throw new UnauthorizedException
+            {
+                Errors = result.Errors.Select(e => e.Description)
+            };
+
         await userManager.AddToRoleAsync(newUser, Role.User.ToString());
 
         return newUser;
@@ -22,16 +25,15 @@ public class UserRepository(
 
     public async Task<UserDBO> GetUserAsync(string? email) =>
         await userManager.FindByEmailAsync(email ?? "") ??
-            throw new Exception("User not found");
+            throw new UnauthorizedException("User not found");
 
     public async Task<UserDBO> LoginAsync(Login user)
     {
-        var userDBO = await userManager.FindByEmailAsync(user.Email) ??
-            throw new Exception("User not found");
+        var userDBO = await GetUserAsync(user.Email);
 
         var result = await userManager.CheckPasswordAsync(userDBO, user.Password);
         if (!result)
-            throw new Exception("Invalid password");
+            throw new UnauthorizedException("Invalid password");
 
         return userDBO;
     }

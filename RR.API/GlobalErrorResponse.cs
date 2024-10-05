@@ -2,20 +2,13 @@
 
 public class GlobalErrorResponse(Exception? ex)
 {
-    public string Type { get; set; } = ex?.GetType().Name ?? "";
-    public string Message { get; set; } = GetMessages(ex) ?? "";
-    public string StackTrace { get; set; } = IsDevelopment && ex is not null ? ex.ToString() : "Internal server error";
+    public string? Type { get; set; } = ex?.GetType().Name;
+    public IEnumerable<string>? Errors { get; set; } =
+        ex is not null && ex is ExceptionBase exBase ? exBase.Errors : null;
+    public object? DataObject { get; set; } =
+        ex is not null && ex is ExceptionBase exBase ? exBase.DataObject : null;
+
+    public string? StackTrace { get; set; } = IsDevelopment ? ex?.ToString() : null;
 
     public static bool IsDevelopment { private get; set; }
-
-    private static string GetMessages(Exception? ex)
-    {
-        if (ex is null)
-            return "";
-
-        if (ex.InnerException is null)
-            return ex.Message;
-
-        return $"{ex.Message} {GetMessages(ex.InnerException)}";
-    }
 }

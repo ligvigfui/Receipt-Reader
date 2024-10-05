@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HttpExceptions\HttpExceptions.csproj" />
     <ProjectReference Include="..\RR.Configuration\RR.Configuration.csproj" />
     <ProjectReference Include="..\RR.Data\RR.Data.csproj" />
     <ProjectReference Include="..\RR.Common\RR.Common.csproj" />

@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-
-namespace RR.Service.Services;
+﻿namespace RR.Service.Services;
 
 public class SecurityService : ISecurityService
 {
@@ -59,12 +57,16 @@ public class SecurityService : ISecurityService
     }
     public async Task<string> RefreshTokenAsync()
     {
-        var email = httpContextAccessor?.HttpContext?.GetUserEmail();
-        var userDBO = await userRepository.GetUserAsync(email);
+        var userDBO = await GetUserAsync();
 
         var loginResponse = GetJwtToken(userDBO);
 
         return loginResponse;
     }
 
+    public async Task<UserDBO> GetUserAsync()
+    {
+        var userEmail = httpContextAccessor?.HttpContext?.GetUserEmail();
+        return await userRepository.GetUserAsync(userEmail);
+    }
 }

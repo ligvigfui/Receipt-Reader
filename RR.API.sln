@@ -18,6 +18,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RR.Configuration", "RR.Conf
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RR.Data", "RR.Data\RR.Data.csproj", "{413EC61D-10D9-49C5-BE86-C7A6CE0B3869}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpExceptions", "HttpExceptions\HttpExceptions.csproj", "{480C1C24-60D7-4062-ADEB-89C6C5005E84}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{413EC61D-10D9-49C5-BE86-C7A6CE0B3869}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{413EC61D-10D9-49C5-BE86-C7A6CE0B3869}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{413EC61D-10D9-49C5-BE86-C7A6CE0B3869}.Release|Any CPU.Build.0 = Release|Any CPU
+		{480C1C24-60D7-4062-ADEB-89C6C5005E84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{480C1C24-60D7-4062-ADEB-89C6C5005E84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{480C1C24-60D7-4062-ADEB-89C6C5005E84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{480C1C24-60D7-4062-ADEB-89C6C5005E84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

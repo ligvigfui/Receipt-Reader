@@ -1,5 +1,4 @@
-﻿
-namespace RR.Data.Interfaces;
+﻿namespace RR.Data.Interfaces;
 
 public interface IUserRepository
 {

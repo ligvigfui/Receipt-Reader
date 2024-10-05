@@ -9,15 +9,18 @@ public class ErrorsController(ILogger<ErrorsController> logger) : ControllerBase
     public GlobalErrorResponse Error()
     {
         var context = HttpContext.Features.Get<IExceptionHandlerFeature>();
-        var exception = context?.Error;
-        var code = 500;
+        
+        var exception = context!.Error;
 
-        if (exception is BadHttpRequestException)
-            code = 400;
+        var code = exception switch
+        {
+            ExceptionBase httpException => httpException.StatusCode,
+            _ => HttpStatusCode.InternalServerError
+        };
 
-        Response.StatusCode = code;
+        Response.StatusCode = (int)code;
 
-        logger.LogError(exception, exception!.ToString(), code);
+        logger.LogError(exception, exception.ToString(), code);
 
         return new GlobalErrorResponse(exception);
     }

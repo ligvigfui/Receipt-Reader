@@ -28,7 +28,8 @@ async function OnSubmit() {
   if (response.ok) {
     alert(result.token)
   } else {
-    alert(result.message)
+    let errors: string[] = result.errors;
+    alert(errors.join('\n'))
   }
 }
 </script>

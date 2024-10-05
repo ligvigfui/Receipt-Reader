@@ -1,4 +1,4 @@
-namespace RR.Common.Models;
+namespace RR.Common.Models.Enums;
 
 public enum Role
 {
