@@ -1,6 +1,6 @@
 ﻿namespace RR.Common.Models;
 
-public class Receipt()
+public class Receipt
 {
     public Vendor Vendor { get; set; }
     public List<ReceiptItem> Items { get; set; } = [];

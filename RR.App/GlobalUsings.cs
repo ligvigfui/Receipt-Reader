@@ -1,13 +1,12 @@
 ﻿global using CommunityToolkit.Mvvm.ComponentModel;
 global using CommunityToolkit.Mvvm.Input;
 global using Microsoft.Extensions.Configuration;
-global using NetCore.AutoRegisterDi;
+global using RR.App.Configuration;
 global using RR.App.Configurations;
+global using RR.App.Interfaces;
+global using RR.App.Service.Interfaces;
+global using RR.App.Service.Services;
 global using RR.App.ViewModels;
 global using RR.App.Views;
 global using RR.Common.IntermediateModels;
-global using System.Net.Http.Headers;
-global using System.Net.Http.Json;
 global using System.Reflection;
-global using System.Text;
-global using System.Text.Json;

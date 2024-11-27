@@ -5,6 +5,6 @@ public class AuthorizeRolesAttribute : AuthorizeAttribute
 {
     public AuthorizeRolesAttribute(params Role[] roles)
     {
-        Roles = string.Join(",", roles.Select(x => x.ToString()));
+        Roles = $"{Role.Admin}, {string.Join(",", roles.Select(x => x.ToString()))}";
     }
 }

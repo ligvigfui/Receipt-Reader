@@ -13,13 +13,17 @@ public partial class MainViewModel : ObservableObject
         _ => $"Clicked {Count} times"
     };
 
-    [RelayCommand]
-    void CounterButtonClicked()
+    public IAsyncRelayCommand CounterButtonClickedCommand =>
+        new AsyncRelayCommand(CounterButtonClicked);
+    
+    async Task CounterButtonClicked()
     {
+        await Task.Delay(1000);
         Count++;
     }
 
-    [RelayCommand]
+    public IAsyncRelayCommand LoginButtonClickedCommand =>
+        new AsyncRelayCommand(LoginButtonClicked);
     async Task LoginButtonClicked() =>
-        await Shell.Current.GoToAsync($"{LoginPage.Route}");
+        await Shell.Current.GoToAsync(LoginPage.Route);
 }

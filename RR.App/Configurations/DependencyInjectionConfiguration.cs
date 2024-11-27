@@ -13,6 +13,8 @@ public static class DependencyInjectionConfiguration
 
         //builder.Services.RegisterAssemblyPublicNonGenericClasses(assembliesToScan)
         //        .AsPublicImplementedInterfaces();
+        builder.Services.AddSingleton<IRRApiService, RRApiService>();
+
         builder.Services.AddSingleton<MainPage>();
         builder.Services.AddSingleton<MainViewModel>();
         
@@ -20,9 +22,10 @@ public static class DependencyInjectionConfiguration
         builder.Services.AddSingleton<LoginViewModel>();
 
         var apiHttpClientSettings = builder.Configuration.GetSection("ApiHttpClient").Get<ApiHttpClientSettings>()!;
-        builder.Services.AddHttpClient(HttpClientConstants.ApiClient, client =>
+        builder.Services.AddHttpClient(HttpClientConstants.RRApiClient, client =>
         {
             client.BaseAddress = new Uri(apiHttpClientSettings.BaseAddress);
+            //client.Timeout = TimeSpan.FromSeconds(1);
         });
 
         return builder;

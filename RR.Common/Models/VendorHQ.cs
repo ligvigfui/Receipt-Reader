@@ -2,6 +2,6 @@
 
 public class VendorHQ
 {
-    public string Name { get; set; }
-    public Address Address { get; set; }
+    public required string Name { get; set; }
+    public Address? Address { get; set; }
 }

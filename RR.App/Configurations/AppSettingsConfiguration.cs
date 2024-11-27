@@ -24,5 +24,5 @@ public static class AppSettingsConfiguration
 
 public class ApiHttpClientSettings
 {
-    public string BaseAddress { get; set; } = string.Empty;
+    public string BaseAddress { get; set; }
 }

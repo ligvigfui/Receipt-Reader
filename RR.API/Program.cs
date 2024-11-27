@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel((context, options) =>
@@ -50,6 +49,7 @@ app.UseCors("AllowSpecificOrigin");
 app.UseAuthorization();
 app.UseExceptionHandler("/error");
 app.UseHttpsRedirection();
+app.UseMiddleware<AutoRefreshTokenMiddleware>();
 
 //Auto migration
 using var serviceScope = (app as IApplicationBuilder).ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();

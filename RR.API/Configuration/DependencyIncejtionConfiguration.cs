@@ -10,6 +10,7 @@ public static class DependencyIncejtionConfiguration
         {
             Assembly.GetExecutingAssembly(),
             Assembly.GetAssembly(typeof(ISecurityService)),
+            Assembly.GetAssembly(typeof(AutoRefreshTokenMiddleware)),
             Assembly.GetAssembly(typeof(IUserRepository))
         };
 
@@ -23,6 +24,7 @@ public static class DependencyIncejtionConfiguration
                 .AsPublicImplementedInterfaces();
 
         services.AddHttpContextAccessor();
+        services.AddTransient<AutoRefreshTokenMiddleware>();
 
         return services;
     }

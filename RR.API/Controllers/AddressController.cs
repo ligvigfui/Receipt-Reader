@@ -15,11 +15,8 @@ public class AddressController(
     [HttpPost]
     [Route(nameof(Create))]
     [AuthorizeRoles(Role.User)]
-    public async Task<IActionResult> Create([FromBody] Address address)
-    {
-        var addressDBO = await addressRepository.CreateAddressAsync(address);
-        return CreatedAtAction(nameof(Create), addressDBO);
-    }
+    public async Task<IActionResult> Create([FromBody] Address address) =>
+        CreatedAtAction(nameof(Create), await addressRepository.CreateAddressAsync(address));
 
-    
+
 }

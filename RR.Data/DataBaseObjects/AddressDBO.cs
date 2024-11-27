@@ -25,7 +25,7 @@ public class AddressDBO
         Line1 = addressDBO.Line1,
         Line2 = addressDBO.Line2,
         Number = addressDBO.Number,
-        Appratment = addressDBO.Appratment,
+        Apartment = addressDBO.Appratment,
         Note = addressDBO.Note
     };
 
@@ -38,7 +38,7 @@ public class AddressDBO
         Line1 = address.Line1,
         Line2 = address.Line2,
         Number = address.Number,
-        Appratment = address.Appratment,
+        Appratment = address.Apartment,
         Note = address.Note
     };
 }

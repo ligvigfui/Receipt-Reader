@@ -50,7 +50,8 @@ public class SecurityService : ISecurityService
             issuer: jWTConfiguration.Issuer,
             audience: jWTConfiguration.Audience,
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(jWTConfiguration.DurationInMinutes),
+            notBefore: DateTime.UtcNow,
+            expires: DateTime.UtcNow.AddDays(jWTConfiguration.SlidingExpirationInDays),
             signingCredentials: signingCredentials);
 
         return new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
@@ -59,9 +60,9 @@ public class SecurityService : ISecurityService
     {
         var userDBO = await GetUserAsync();
 
-        var loginResponse = GetJwtToken(userDBO);
+        var newToken = GetJwtToken(userDBO);
 
-        return loginResponse;
+        return newToken;
     }
 
     public async Task<UserDBO> GetUserAsync()

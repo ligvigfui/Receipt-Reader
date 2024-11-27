@@ -2,6 +2,6 @@
 
 public interface IAddressRepository
 {
-    Task<AddressDBO> CreateAddressAsync(AddressDBO address);
-    Task<AddressDBO?> GetAddressByIdAsync(int addressId);
+    Task<Address> CreateAddressAsync(AddressDBO address);
+    Task<Address?> GetAddressByIdAsync(int addressId);
 }

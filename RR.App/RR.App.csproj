@@ -89,6 +89,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\RR.App.Configuration\RR.App.Configuration.csproj" />
+	  <ProjectReference Include="..\RR.App.Service\RR.App.Service.csproj" />
 	  <ProjectReference Include="..\RR.Common\RR.Common.csproj" />
 	</ItemGroup>
 

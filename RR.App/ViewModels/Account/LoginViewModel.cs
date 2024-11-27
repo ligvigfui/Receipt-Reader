@@ -1,30 +1,30 @@
 ﻿namespace RR.App.ViewModels;
 
-public partial class LoginViewModel(IHttpClientFactory httpClientFactory) : ObservableObject
+public partial class LoginViewModel(IRRApiService RRApiService) : ObservableObject
 {
-    readonly HttpClient ApiHttpClient = httpClientFactory.CreateClient(HttpClientConstants.ApiClient);
-
     [ObservableProperty]
     string email = string.Empty;
     [ObservableProperty]
     string password = string.Empty;
 
-    [RelayCommand]
-    async Task LoginButtonClicked()
+    public IAsyncRelayCommand LoginButtonClicked2Command =>
+        new AsyncRelayCommand(LoginButtonClicked2);
+
+    async Task LoginButtonClicked2()
     {
-
-        var userInfo = new
+        try
         {
-            Email,
-            Password
-        };
-
-        var response = await ApiHttpClient.PostAsync("Account/Login", new StringContent(JsonSerializer.Serialize(userInfo), Encoding.UTF8, "application/json")) ??
-            throw new Exception("The server did not respond to the login request.");
-        response.EnsureSuccessStatusCode();
-
-        var json = await response.Content.ReadFromJsonAsync<AuthResponse>();
-        ApiHttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", json.Token);
-        await Shell.Current.GoToAsync($"..");
+            Login userInfo = new()
+            {
+                Email = Email,
+                Password = Password,
+            };
+            await RRApiService.Login(userInfo);
+            await Shell.Current.GoToAsync("..");
+        }
+        catch (Exception ex)
+        {
+            await Application.Current.MainPage.DisplayAlert("Login failed", ex.Message, "cancel");
+        }
     }
 }

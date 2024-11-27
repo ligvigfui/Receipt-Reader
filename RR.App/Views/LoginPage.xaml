@@ -25,7 +25,7 @@
             Margin="0,10,0,0" />
         <Button
             Text="Login"
-            BindingContext="{Binding LoginButtonClickedCommand}"
+            Command="{Binding LoginButtonClicked2Command}"
             Margin="0,20,0,0" />
     </VerticalStackLayout>
 </ContentPage>
