@@ -98,6 +98,21 @@
 	  <MauiXaml Update="Views\LoginPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\AddressPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\EditReceiptPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Views\AddressPage.xaml.cs">
+	    <DependentUpon>AddressPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\EditReceiptPage.xaml.cs">
+	    <DependentUpon>EditReceiptPage.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 </Project>

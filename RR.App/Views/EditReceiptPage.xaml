@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RR.App.Views.EditReceiptPage"
+             xmlns:vm="clr-namespace:RR.App.ViewModels"
+             x:DataType="vm:EditReceiptViewModel"
+             Title="EditReceiptPage">
+    <ScrollView>
+        <VerticalStackLayout>
+            <Label 
+                Text="Create or Edit Receipt"
+                VerticalOptions="Center" 
+                HorizontalOptions="Center" />
+
+            <Entry
+                x:Name="Name"
+                Placeholder="Name"
+                BindingContext="{Binding Name}"
+                Margin="0,20,0,0" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

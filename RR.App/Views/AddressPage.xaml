@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RR.App.Views.AddressPage"
+             xmlns:vm="clr-namespace:RR.App.ViewModels"
+             x:DataType="vm:AddressViewModel"
+             Title="AddressPage">
+    <ScrollView>
+        <VerticalStackLayout>
+            <Label 
+                Text="Edit Address"
+                VerticalOptions="Center" 
+                HorizontalOptions="Center" />
+
+            <Entry
+                x:Name="PostalCode"
+                Placeholder="Postal Code"
+                BindingContext="{Binding PostalCode}"
+                Margin="0,20,0,0" />
+
+            <Entry
+                x:Name="Country"
+                Placeholder="Country"
+                BindingContext="{Binding Country}"
+                Margin="0,10,0,0" />
+
+            <Entry
+                x:Name="City"
+                Placeholder="City"
+                BindingContext="{Binding City}"
+                Margin="0,10,0,0" />
+
+            <Entry
+                x:Name="Region"
+                Placeholder="Region"
+                BindingContext="{Binding Region}"
+                Margin="0,10,0,0" />
+
+            <Entry
+                x:Name="Line1"
+                Placeholder="Line 1"
+                BindingContext="{Binding Line1}"
+                Margin="0,10,0,0" />
+
+            <Entry
+                x:Name="Line2"
+                Placeholder="Line 2"
+                BindingContext="{Binding Line2}"
+                Margin="0,10,0,0" />
+
+            <Entry
+                x:Name="Number"
+                Placeholder="Number"
+                BindingContext="{Binding Number}"
+                Margin="0,10,0,0" />
+
+            <Entry
+                x:Name="Apartment"
+                Placeholder="Apartment"
+                BindingContext="{Binding Apartment}"
+                Margin="0,10,0,0" />
+
+            <Entry
+                x:Name="Note"
+                Placeholder="Note"
+                BindingContext="{Binding Note}"
+                Margin="0,10,0,0" />
+
+            <Button
+                Text="Save"
+                Command="{Binding SaveButtonClickedCommand}"
+                Margin="0,20,0,0" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
