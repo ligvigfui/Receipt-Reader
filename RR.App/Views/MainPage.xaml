@@ -36,7 +36,8 @@
             <Button
                 Text="Go to Login"
                 Command="{Binding LoginButtonClickedCommand}"
-                Margin="0,20,0,0" />
+                Margin="0,20,0,0"
+                AutomationId="LoginButton" />
         </VerticalStackLayout>
     </ScrollView>
 

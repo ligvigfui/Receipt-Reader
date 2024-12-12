@@ -16,6 +16,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RR.App.Service", "RR.App.Se
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RR.App.Configuration", "RR.App.Configuration\RR.App.Configuration.csproj", "{42BA4D6D-C41E-4424-9255-28F52994E762}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UITests.Shared", "RR.App.E2ETests\UITests.Shared\UITests.Shared.csproj", "{2D4AA98D-B08D-46B0-ABB1-44B15F193BA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UITests.Android", "RR.App.E2ETests\UITests.Android\UITests.Android.csproj", "{E46E1593-C512-49E9-A259-24399CD0DB34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UITests.iOS", "RR.App.E2ETests\UITests.iOS\UITests.iOS.csproj", "{BD718AB9-CA82-4D82-A248-8A523B8C74E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UITests.macOS", "RR.App.E2ETests\UITests.macOS\UITests.macOS.csproj", "{E8449788-994E-45BE-B505-E190F3FC7CF6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UITests.Windows", "RR.App.E2ETests\UITests.Windows\UITests.Windows.csproj", "{895A50BA-2CF9-4C66-A3A9-E1DBCD20C557}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +52,26 @@ Global
 		{42BA4D6D-C41E-4424-9255-28F52994E762}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42BA4D6D-C41E-4424-9255-28F52994E762}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42BA4D6D-C41E-4424-9255-28F52994E762}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D4AA98D-B08D-46B0-ABB1-44B15F193BA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D4AA98D-B08D-46B0-ABB1-44B15F193BA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D4AA98D-B08D-46B0-ABB1-44B15F193BA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D4AA98D-B08D-46B0-ABB1-44B15F193BA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E46E1593-C512-49E9-A259-24399CD0DB34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E46E1593-C512-49E9-A259-24399CD0DB34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E46E1593-C512-49E9-A259-24399CD0DB34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E46E1593-C512-49E9-A259-24399CD0DB34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD718AB9-CA82-4D82-A248-8A523B8C74E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD718AB9-CA82-4D82-A248-8A523B8C74E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD718AB9-CA82-4D82-A248-8A523B8C74E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD718AB9-CA82-4D82-A248-8A523B8C74E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8449788-994E-45BE-B505-E190F3FC7CF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8449788-994E-45BE-B505-E190F3FC7CF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8449788-994E-45BE-B505-E190F3FC7CF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8449788-994E-45BE-B505-E190F3FC7CF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{895A50BA-2CF9-4C66-A3A9-E1DBCD20C557}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{895A50BA-2CF9-4C66-A3A9-E1DBCD20C557}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{895A50BA-2CF9-4C66-A3A9-E1DBCD20C557}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{895A50BA-2CF9-4C66-A3A9-E1DBCD20C557}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
