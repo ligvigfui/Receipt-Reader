@@ -4,7 +4,7 @@ public static class AuthenticationConfiguration
 {
     public static WebApplicationBuilder ConfigureAuthentication(this WebApplicationBuilder builder)
     {
-        var jwtConfiguration = builder.Configuration.GetSection("JWT").Get<JWTConfiguration>()!;
+        var jwtConfiguration = builder.Configuration.GetSection("JWT").Get<JWTSettings>()!;
 
 
         builder.Services.AddAuthentication(options =>

@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+	  <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\HttpExceptions\HttpExceptions.csproj" />
-    <ProjectReference Include="..\RR.Configuration\RR.Configuration.csproj" />
+    <ProjectReference Include="..\RR.Settings\RR.Settings.csproj" />
     <ProjectReference Include="..\RR.Data\RR.Data.csproj" />
     <ProjectReference Include="..\RR.Common\RR.Common.csproj" />
   </ItemGroup>

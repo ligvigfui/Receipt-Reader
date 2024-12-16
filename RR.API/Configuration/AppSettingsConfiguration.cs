@@ -12,7 +12,7 @@ public static class AppSettingsConfiguration
         void Configure<T>(string section) where T : class =>
             builder.Services.Configure<T>(builder.Configuration.GetSection(section));
 
-        Configure<JWTConfiguration>("JWT");
+        Configure<JWTSettings>("JWT");
 
         return builder;
     }

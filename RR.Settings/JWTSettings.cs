@@ -1,6 +1,6 @@
-﻿namespace RR.Configuration;
+﻿namespace RR.Settings;
 
-public record JWTConfiguration
+public record JWTSettings
 {
     public string Audience { get; set; }
     public short ExpirationInDays { get; set; }

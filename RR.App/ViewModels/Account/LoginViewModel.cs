@@ -1,4 +1,5 @@
-﻿namespace RR.App.ViewModels;
+﻿using Microsoft.Maui.ApplicationModel.Communication;
+namespace RR.App.ViewModels;
 
 public partial class LoginViewModel(IRRApiService RRApiService) : ObservableObject
 {

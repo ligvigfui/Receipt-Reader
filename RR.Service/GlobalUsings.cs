@@ -3,7 +3,7 @@ global using Microsoft.Extensions.Options;
 global using Microsoft.IdentityModel.Tokens;
 global using RR.Common.IntermediateModels;
 global using RR.Common.Models;
-global using RR.Configuration;
+global using RR.Settings;
 global using RR.Data.DataBaseObjects;
 global using RR.Data.Interfaces;
 global using RR.Service.Extensions;

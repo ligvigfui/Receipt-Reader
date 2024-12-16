@@ -3,18 +3,18 @@
 public class SecurityService : ISecurityService
 {
 
-    private readonly JWTConfiguration jWTConfiguration;
+    private readonly JWTSettings JWTSettings;
     private readonly IHttpContextAccessor httpContextAccessor;
     private readonly IUserRepository userRepository;
     private readonly SigningCredentials signingCredentials;
 
     public SecurityService(
-        IOptions<JWTConfiguration> jWTConfiguration,
+        IOptions<JWTSettings> jWTConfiguration,
         IHttpContextAccessor httpContextAccessor,
         IUserRepository userRepository
     )
     {
-        this.jWTConfiguration = jWTConfiguration.Value;
+        JWTSettings = jWTConfiguration.Value;
         this.httpContextAccessor = httpContextAccessor;
         this.userRepository = userRepository;
 
@@ -47,11 +47,11 @@ public class SecurityService : ISecurityService
         ];
 
         var jwtSecurityToken = new JwtSecurityToken(
-            issuer: jWTConfiguration.Issuer,
-            audience: jWTConfiguration.Audience,
+            issuer: JWTSettings.Issuer,
+            audience: JWTSettings.Audience,
             claims: claims,
             notBefore: DateTime.UtcNow,
-            expires: DateTime.UtcNow.AddDays(jWTConfiguration.SlidingExpirationInDays),
+            expires: DateTime.UtcNow.AddDays(JWTSettings.SlidingExpirationInDays),
             signingCredentials: signingCredentials);
 
         return new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);

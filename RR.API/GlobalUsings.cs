@@ -13,7 +13,7 @@ global using RR.API.Middlewares;
 global using RR.Common.IntermediateModels;
 global using RR.Common.Models;
 global using RR.Common.Models.Enums;
-global using RR.Configuration;
+global using RR.Settings;
 global using RR.Data;
 global using RR.Data.DataBaseObjects;
 global using RR.Data.Interfaces;
