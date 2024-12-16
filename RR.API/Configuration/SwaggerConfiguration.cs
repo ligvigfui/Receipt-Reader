@@ -40,5 +40,17 @@ public static class SwaggerConfiguration
                 }
             });
         });
+
+        var swaggerSettings = builder.Configuration.GetSection("Swagger").Get<SwaggerSettings>();
+        if (swaggerSettings.LaunchOnStartup)
+        {
+            var url = "https://localhost:5001/swagger/index.html";
+            var psi = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            };
+            System.Diagnostics.Process.Start(psi);
+        }
     }
 }
