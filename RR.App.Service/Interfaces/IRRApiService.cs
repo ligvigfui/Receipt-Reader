@@ -1,5 +1,4 @@
-﻿using RR.Common.IntermediateModels;
-namespace RR.App.Service.Interfaces;
+﻿namespace RR.App.Service.Interfaces;
 
 public interface IRRApiService
 {
