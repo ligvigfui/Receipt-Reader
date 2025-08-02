@@ -16,9 +16,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RR.App.Service", "RR.App.Se
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RR.App.Configuration", "RR.App.Configuration\RR.App.Configuration.csproj", "{42BA4D6D-C41E-4424-9255-28F52994E762}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RR.Tests", "RR.Tests", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RR.App.Tests.E2E", "RR.App.Tests.E2E\RR.App.Tests.E2E.csproj", "{01089356-7DE4-49EA-B17E-3FC2CA371CEB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RR.App.Tests", "RR.App.Tests\RR.App.Tests.csproj", "{01089356-7DE4-49EA-B17E-3FC2CA371CEB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,9 +49,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{01089356-7DE4-49EA-B17E-3FC2CA371CEB} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {801748D6-14F3-4860-B6B8-5CE0FF09A0D8}

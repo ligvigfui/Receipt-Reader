@@ -1,6 +1,6 @@
 ﻿namespace RR.App.Service.Services;
 
-public class RRApiService(IHttpClientFactory httpClientFactory) : IRRApiService
+public class AuthenticationService(IHttpClientFactory httpClientFactory) : IRRApiService
 {
     readonly HttpClient ApiHttpClient = httpClientFactory.CreateClient(HttpClientConstants.RRApiClient);
 

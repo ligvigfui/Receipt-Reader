@@ -4,13 +4,9 @@ public static class AppiumServerHelper
 {
     private static AppiumLocalService? _appiumLocalService;
 
-    public const string DefaultHostAddress = "127.0.0.1";
-    public const int DefaultHostPort = 4723;
-
-    public static void StartAppiumLocalServer(string host = DefaultHostAddress,
-        int port = DefaultHostPort)
+    public static void StartAppiumLocalServer(string host, int port)
     {
-        if (_appiumLocalService is not null)
+        if (_appiumLocalService is not null && _appiumLocalService.IsRunning)
         {
             return;
         }
@@ -27,7 +23,9 @@ public static class AppiumServerHelper
 
         if (!File.Exists(nodePath))
         {
-            throw new FileNotFoundException("Node.js executable not found", nodePath);
+            nodePath = @"E:\node\node.exe";
+            if (!File.Exists(nodePath))
+                throw new FileNotFoundException("Node.js executable not found", nodePath);
         }
 
         var builder = new AppiumServiceBuilder()

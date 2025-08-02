@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:resx="clr-namespace:RR.App.Resources"
              x:Class="RR.App.Views.MainPage"
              xmlns:vm="clr-namespace:RR.App.ViewModels"
              x:DataType="vm:MainViewModel">
@@ -35,7 +36,7 @@
                 HorizontalOptions="Fill" />
 
             <Button
-                Text="Go to Login"
+                Text="{x:Static resx:Resources.GoToLogin}"
                 Command="{Binding LoginButtonClickedCommand}"
                 Margin="0,20,0,0" />
         </VerticalStackLayout>

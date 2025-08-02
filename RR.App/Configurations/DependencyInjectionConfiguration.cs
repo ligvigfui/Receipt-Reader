@@ -13,7 +13,7 @@ public static class DependencyInjectionConfiguration
 
         //builder.Services.RegisterAssemblyPublicNonGenericClasses(assembliesToScan)
         //        .AsPublicImplementedInterfaces();
-        builder.Services.AddSingleton<IRRApiService, RRApiService>();
+        builder.Services.AddSingleton<IRRApiService, AuthenticationService>();
 
         builder.Services.AddSingleton<MainPage>();
         builder.Services.AddSingleton<MainViewModel>();

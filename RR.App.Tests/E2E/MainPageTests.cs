@@ -6,7 +6,8 @@ public class MainPageTests : BaseTest
     [Test]
     public void AppLaunches()
     {
-        App.GetScreenshot().SaveAsFile($"{nameof(AppLaunches)}.png");
+        App.ActivateApp("com.ligvigfui.ReceiptReader");
+        App.FindElement(By.XPath("//*[@text='Click me']")).Click();
     }
 
     [Test]
