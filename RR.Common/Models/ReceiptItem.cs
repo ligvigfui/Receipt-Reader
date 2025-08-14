@@ -3,7 +3,8 @@
 public class ReceiptItem
 {
     public required string Name { get; set; }
-    public int Quantity { get; set; } = 1;
-    public required int PricePerQuantity { get; set; }
-    public int Price => Quantity * PricePerQuantity;
+    public float Quantity { get; set; }
+    public Measurement Measurement { get; set; }
+    public required float PricePerQuantity { get; set; }
+    public float Price => Quantity * PricePerQuantity;
 }

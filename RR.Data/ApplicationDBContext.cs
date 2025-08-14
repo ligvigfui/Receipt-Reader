@@ -5,8 +5,14 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<AddressDBO> Addresses { get; set; }
     public DbSet<ReceiptDBO> Receipts { get; set; }
+    public DbSet<ReceiptItemDBO> ReceiptItems { get; set; }
     public DbSet<VendorDBO> Vendors { get; set; }
     public DbSet<VendorHQDBO> VendorHQs { get; set; }
+    public DbSet<CategoryDBO> Categories { get; set; }
+    public DbSet<CategoryPropertyDBO> CategoryProperties { get; set; }
+    public DbSet<PropertyEnumValueDBO> PropertyEnumValues { get; set; }
+    public DbSet<ItemCategoryDBO> ItemCategories { get; set; }
+    public DbSet<CategoryPropertyValueDBO> CategoryPropertyValues { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -46,5 +52,35 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
             }
         }
+        // Composite keys and relationships for new tables
+        modelBuilder.Entity<ItemCategoryDBO>()
+            .HasKey(ic => new { ic.ItemId, ic.CategoryId });
+        modelBuilder.Entity<ItemCategoryDBO>()
+            .HasOne(ic => ic.Item)
+            .WithMany(i => i.ItemCategories)
+            .HasForeignKey(ic => ic.ItemId)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<ItemCategoryDBO>()
+            .HasOne(ic => ic.Category)
+            .WithMany(c => c.ItemCategories)
+            .HasForeignKey(ic => ic.CategoryId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<CategoryPropertyValueDBO>()
+            .HasKey(cp => new { cp.CategoryId, cp.EnumValueId });
+        modelBuilder.Entity<CategoryPropertyValueDBO>()
+            .HasOne(cp => cp.Category)
+            .WithMany(c => c.CategoryPropertyValues)
+            .HasForeignKey(cp => cp.CategoryId)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<CategoryPropertyValueDBO>()
+            .HasOne(cp => cp.PropertyEnumValue)
+            .WithMany(ev => ev.CategoryPropertyValues)
+            .HasForeignKey(cp => cp.EnumValueId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<PropertyEnumValueDBO>()
+            .HasIndex(ev => new { ev.PropertyId, ev.EnumValue })
+            .IsUnique();
     }
 }

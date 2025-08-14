@@ -6,7 +6,7 @@ public static class HttpContextExtension
 
     public static string GetUserEmail(this HttpContext context)
     {
-        var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last() ?? "";
+        var token = context.Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last() ?? "";
 
         if (string.IsNullOrEmpty(token))
             throw new UnauthorizedAccessException();

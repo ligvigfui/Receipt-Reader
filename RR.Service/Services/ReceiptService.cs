@@ -1,6 +1,6 @@
 ﻿namespace RR.Service.Services;
 
-class ReceiptService(
+public class ReceiptService(
     IReceiptRepository receiptRepository,
     ISecurityService securityService
 ) : IReceiptService

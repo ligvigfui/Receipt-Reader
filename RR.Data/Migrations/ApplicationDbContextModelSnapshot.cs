@@ -17,7 +17,7 @@ namespace RR.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true)
@@ -188,6 +188,37 @@ namespace RR.Data.Migrations
                     b.HasIndex("VendorId");
 
                     b.ToTable("ReceiptDBO");
+                });
+
+            modelBuilder.Entity("RR.Data.DataBaseObjects.ReceiptItemDBO", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PricePerQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReceiptDBOId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReceiptId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReceiptDBOId");
+
+                    b.ToTable("ReceiptItemDBO");
                 });
 
             modelBuilder.Entity("RR.Data.DataBaseObjects.RoleDBO", b =>
@@ -405,6 +436,17 @@ namespace RR.Data.Migrations
                     b.Navigation("Vendor");
                 });
 
+            modelBuilder.Entity("RR.Data.DataBaseObjects.ReceiptItemDBO", b =>
+                {
+                    b.HasOne("RR.Data.DataBaseObjects.ReceiptDBO", "ReceiptDBO")
+                        .WithMany("Items")
+                        .HasForeignKey("ReceiptDBOId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ReceiptDBO");
+                });
+
             modelBuilder.Entity("RR.Data.DataBaseObjects.UserRoleDBO", b =>
                 {
                     b.HasOne("RR.Data.DataBaseObjects.RoleDBO", "Role")
@@ -451,6 +493,11 @@ namespace RR.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("RR.Data.DataBaseObjects.ReceiptDBO", b =>
+                {
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("RR.Data.DataBaseObjects.RoleDBO", b =>

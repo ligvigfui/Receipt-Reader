@@ -9,14 +9,16 @@ public class ReceiptItemDBO
     public int ReceiptId { get; set; }
     public virtual ReceiptDBO ReceiptDBO { get; set; }
     public string Name { get; set; }
-    public int Quantity { get; set; } = 1;
-    public int PricePerQuantity { get; set; }
-    public int Price => Quantity * PricePerQuantity;
+    public float Quantity { get; set; }
+    public Measurement Measurement { get; set; }
+    public float PricePerQuantity { get; set; }
+    public float Price => Quantity * PricePerQuantity;
 
     public static implicit operator ReceiptItem(ReceiptItemDBO receiptItemDBO) => new()
     {
         Name = receiptItemDBO.Name,
         Quantity = receiptItemDBO.Quantity,
+        Measurement = receiptItemDBO.Measurement,
         PricePerQuantity = receiptItemDBO.PricePerQuantity,
     };
 
@@ -24,6 +26,7 @@ public class ReceiptItemDBO
     {
         Name = receiptItem.Name,
         Quantity = receiptItem.Quantity,
+        Measurement = receiptItem.Measurement,
         PricePerQuantity = receiptItem.PricePerQuantity
     };
 }

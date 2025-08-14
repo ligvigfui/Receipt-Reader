@@ -1,6 +1,6 @@
 ﻿namespace RR.Data.Repository;
 
-class ReceiptRepository(
+public class ReceiptRepository(
     ApplicationDbContext context
 ) : IReceiptRepository
 {
