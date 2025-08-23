@@ -1,6 +1,6 @@
 ﻿namespace RR.Data.DataBaseObjects;
 
-[Table(nameof(VendorHQDBO))]
+[Tables(nameof(VendorHQDBO))]
 public class VendorHQDBO
 {
     [Key]

@@ -1,6 +1,6 @@
 ﻿namespace RR.Data.DataBaseObjects;
 
-[Table(nameof(UserDBO))]
+[Tables(nameof(UserDBO))]
 public class UserDBO : IdentityUser
 {
     public virtual List<ReceiptDBO> Receipts { get; set; }

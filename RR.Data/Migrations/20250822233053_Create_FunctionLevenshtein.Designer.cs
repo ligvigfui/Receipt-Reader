@@ -12,15 +12,15 @@ using RR.Data;
 namespace RR.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250809153756_init")]
-    partial class init
+    [Migration("20250822233053_Create_FunctionLevenshtein")]
+    partial class Create_FunctionLevenshtein
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "9.0.8")
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true)
@@ -50,7 +50,7 @@ namespace RR.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RoleClaimDBO", (string)null);
+                    b.ToTable("RoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -75,7 +75,7 @@ namespace RR.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserClaimDBO", (string)null);
+                    b.ToTable("UserClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -97,7 +97,7 @@ namespace RR.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserLoginDBO", (string)null);
+                    b.ToTable("UserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -116,7 +116,7 @@ namespace RR.Data.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("UserTokenDBO", (string)null);
+                    b.ToTable("UserTokens", (string)null);
                 });
 
             modelBuilder.Entity("RR.Data.DataBaseObjects.AddressDBO", b =>
@@ -160,7 +160,61 @@ namespace RR.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AddressDBO");
+                    b.ToTable("Addresses");
+                });
+
+            modelBuilder.Entity("RR.Data.DataBaseObjects.CategoryDBO", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentCategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentCategoryId");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("RR.Data.DataBaseObjects.ProductCategoryDBO", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId", "CategoryId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("ProductCategoryDBO", (string)null);
+                });
+
+            modelBuilder.Entity("RR.Data.DataBaseObjects.ProductDBO", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("RR.Data.DataBaseObjects.ReceiptDBO", b =>
@@ -190,7 +244,7 @@ namespace RR.Data.Migrations
 
                     b.HasIndex("VendorId");
 
-                    b.ToTable("ReceiptDBO");
+                    b.ToTable("Receipts");
                 });
 
             modelBuilder.Entity("RR.Data.DataBaseObjects.ReceiptItemDBO", b =>
@@ -201,15 +255,17 @@ namespace RR.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PricePerQuantity")
+                    b.Property<int>("Measurement")
                         .HasColumnType("int");
 
-                    b.Property<int>("Quantity")
+                    b.Property<float>("PricePerQuantity")
+                        .HasColumnType("real");
+
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
+
+                    b.Property<float>("Quantity")
+                        .HasColumnType("real");
 
                     b.Property<int>("ReceiptDBOId")
                         .HasColumnType("int");
@@ -219,9 +275,11 @@ namespace RR.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ProductId");
+
                     b.HasIndex("ReceiptDBOId");
 
-                    b.ToTable("ReceiptItemDBO");
+                    b.ToTable("ReceiptItems");
                 });
 
             modelBuilder.Entity("RR.Data.DataBaseObjects.RoleDBO", b =>
@@ -248,7 +306,7 @@ namespace RR.Data.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("RoleDBO", (string)null);
+                    b.ToTable("AspNetRoles", (string)null);
                 });
 
             modelBuilder.Entity("RR.Data.DataBaseObjects.UserDBO", b =>
@@ -313,7 +371,7 @@ namespace RR.Data.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("UserDBO", (string)null);
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("RR.Data.DataBaseObjects.UserRoleDBO", b =>
@@ -328,7 +386,7 @@ namespace RR.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserRoleDBO", (string)null);
+                    b.ToTable("AspNetUserRoles", (string)null);
                 });
 
             modelBuilder.Entity("RR.Data.DataBaseObjects.VendorDBO", b =>
@@ -359,7 +417,7 @@ namespace RR.Data.Migrations
 
                     b.HasIndex("HQId");
 
-                    b.ToTable("VendorDBO");
+                    b.ToTable("Vendors");
                 });
 
             modelBuilder.Entity("RR.Data.DataBaseObjects.VendorHQDBO", b =>
@@ -381,7 +439,7 @@ namespace RR.Data.Migrations
 
                     b.HasIndex("AddressId");
 
-                    b.ToTable("VendorHQDBO");
+                    b.ToTable("VendorHQs");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -420,6 +478,35 @@ namespace RR.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("RR.Data.DataBaseObjects.CategoryDBO", b =>
+                {
+                    b.HasOne("RR.Data.DataBaseObjects.CategoryDBO", "ParentCategory")
+                        .WithMany("SubCategories")
+                        .HasForeignKey("ParentCategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("ParentCategory");
+                });
+
+            modelBuilder.Entity("RR.Data.DataBaseObjects.ProductCategoryDBO", b =>
+                {
+                    b.HasOne("RR.Data.DataBaseObjects.CategoryDBO", "Category")
+                        .WithMany("ProductCategories")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RR.Data.DataBaseObjects.ProductDBO", "Product")
+                        .WithMany("ProductCategories")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("RR.Data.DataBaseObjects.ReceiptDBO", b =>
                 {
                     b.HasOne("RR.Data.DataBaseObjects.UserDBO", "User")
@@ -441,11 +528,19 @@ namespace RR.Data.Migrations
 
             modelBuilder.Entity("RR.Data.DataBaseObjects.ReceiptItemDBO", b =>
                 {
+                    b.HasOne("RR.Data.DataBaseObjects.ProductDBO", "Product")
+                        .WithMany("ReceiptItems")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("RR.Data.DataBaseObjects.ReceiptDBO", "ReceiptDBO")
                         .WithMany("Items")
                         .HasForeignKey("ReceiptDBOId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Product");
 
                     b.Navigation("ReceiptDBO");
                 });
@@ -496,6 +591,20 @@ namespace RR.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("RR.Data.DataBaseObjects.CategoryDBO", b =>
+                {
+                    b.Navigation("ProductCategories");
+
+                    b.Navigation("SubCategories");
+                });
+
+            modelBuilder.Entity("RR.Data.DataBaseObjects.ProductDBO", b =>
+                {
+                    b.Navigation("ProductCategories");
+
+                    b.Navigation("ReceiptItems");
                 });
 
             modelBuilder.Entity("RR.Data.DataBaseObjects.ReceiptDBO", b =>

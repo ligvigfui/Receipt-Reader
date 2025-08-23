@@ -1,6 +1,6 @@
 ﻿namespace RR.Data.DataBaseObjects;
 
-[Table(nameof(UserRoleDBO))]
+[Tables(nameof(UserRoleDBO))]
 public class UserRoleDBO : IdentityUserRole<string>
 {
     public virtual UserDBO User { get; set; }

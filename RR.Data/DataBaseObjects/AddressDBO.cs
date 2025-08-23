@@ -1,6 +1,6 @@
 ﻿namespace RR.Data.DataBaseObjects;
 
-[Table(nameof(AddressDBO))]
+[Tables(nameof(AddressDBO))]
 public class AddressDBO
 {
     [Key]

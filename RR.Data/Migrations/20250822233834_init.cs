@@ -12,7 +12,7 @@ namespace RR.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AddressDBO",
+                name: "Addresses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -29,11 +29,44 @@ namespace RR.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AddressDBO", x => x.Id);
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "RoleDBO",
+                name: "Categories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ParentCategoryId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Categories_Categories_ParentCategoryId",
+                        column: x => x.ParentCategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Roles",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -43,11 +76,11 @@ namespace RR.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RoleDBO", x => x.Id);
+                    table.PrimaryKey("PK_Roles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserDBO",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -68,11 +101,11 @@ namespace RR.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserDBO", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "VendorHQDBO",
+                name: "VendorHQs",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -82,17 +115,41 @@ namespace RR.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_VendorHQDBO", x => x.Id);
+                    table.PrimaryKey("PK_VendorHQs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_VendorHQDBO_AddressDBO_AddressId",
+                        name: "FK_VendorHQs_Addresses_AddressId",
                         column: x => x.AddressId,
-                        principalTable: "AddressDBO",
+                        principalTable: "Addresses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "RoleClaimDBO",
+                name: "ProductCategories",
+                columns: table => new
+                {
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductCategories", x => new { x.ProductId, x.CategoryId });
+                    table.ForeignKey(
+                        name: "FK_ProductCategories_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ProductCategories_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RoleClaims",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -103,17 +160,17 @@ namespace RR.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RoleClaimDBO", x => x.Id);
+                    table.PrimaryKey("PK_RoleClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RoleClaimDBO_RoleDBO_RoleId",
+                        name: "FK_RoleClaims_Roles_RoleId",
                         column: x => x.RoleId,
-                        principalTable: "RoleDBO",
+                        principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserClaimDBO",
+                name: "UserClaims",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -124,17 +181,17 @@ namespace RR.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserClaimDBO", x => x.Id);
+                    table.PrimaryKey("PK_UserClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserClaimDBO_UserDBO_UserId",
+                        name: "FK_UserClaims_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "UserDBO",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserLoginDBO",
+                name: "UserLogins",
                 columns: table => new
                 {
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -144,17 +201,17 @@ namespace RR.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserLoginDBO", x => new { x.LoginProvider, x.ProviderKey });
+                    table.PrimaryKey("PK_UserLogins", x => new { x.LoginProvider, x.ProviderKey });
                     table.ForeignKey(
-                        name: "FK_UserLoginDBO_UserDBO_UserId",
+                        name: "FK_UserLogins_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "UserDBO",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserRoleDBO",
+                name: "UserRoles",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -162,23 +219,23 @@ namespace RR.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserRoleDBO", x => new { x.UserId, x.RoleId });
+                    table.PrimaryKey("PK_UserRoles", x => new { x.UserId, x.RoleId });
                     table.ForeignKey(
-                        name: "FK_UserRoleDBO_RoleDBO_RoleId",
+                        name: "FK_UserRoles_Roles_RoleId",
                         column: x => x.RoleId,
-                        principalTable: "RoleDBO",
+                        principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_UserRoleDBO_UserDBO_UserId",
+                        name: "FK_UserRoles_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "UserDBO",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserTokenDBO",
+                name: "UserTokens",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -188,17 +245,17 @@ namespace RR.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserTokenDBO", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.PrimaryKey("PK_UserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
                     table.ForeignKey(
-                        name: "FK_UserTokenDBO_UserDBO_UserId",
+                        name: "FK_UserTokens_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "UserDBO",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "VendorDBO",
+                name: "Vendors",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -210,23 +267,23 @@ namespace RR.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_VendorDBO", x => x.Id);
+                    table.PrimaryKey("PK_Vendors", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_VendorDBO_AddressDBO_AddressId",
+                        name: "FK_Vendors_Addresses_AddressId",
                         column: x => x.AddressId,
-                        principalTable: "AddressDBO",
+                        principalTable: "Addresses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_VendorDBO_VendorHQDBO_HQId",
+                        name: "FK_Vendors_VendorHQs_HQId",
                         column: x => x.HQId,
-                        principalTable: "VendorHQDBO",
+                        principalTable: "VendorHQs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ReceiptDBO",
+                name: "Receipts",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -238,152 +295,183 @@ namespace RR.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ReceiptDBO", x => x.Id);
+                    table.PrimaryKey("PK_Receipts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ReceiptDBO_UserDBO_UserId",
+                        name: "FK_Receipts_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "UserDBO",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_ReceiptDBO_VendorDBO_VendorId",
+                        name: "FK_Receipts_Vendors_VendorId",
                         column: x => x.VendorId,
-                        principalTable: "VendorDBO",
+                        principalTable: "Vendors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ReceiptItemDBO",
+                name: "ReceiptItems",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ReceiptId = table.Column<int>(type: "int", nullable: false),
                     ReceiptDBOId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    PricePerQuantity = table.Column<int>(type: "int", nullable: false)
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<float>(type: "real", nullable: false),
+                    Measurement = table.Column<int>(type: "int", nullable: false),
+                    PricePerQuantity = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ReceiptItemDBO", x => x.Id);
+                    table.PrimaryKey("PK_ReceiptItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ReceiptItemDBO_ReceiptDBO_ReceiptDBOId",
+                        name: "FK_ReceiptItems_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ReceiptItems_Receipts_ReceiptDBOId",
                         column: x => x.ReceiptDBOId,
-                        principalTable: "ReceiptDBO",
+                        principalTable: "Receipts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReceiptDBO_UserId",
-                table: "ReceiptDBO",
-                column: "UserId");
+                name: "IX_Categories_ParentCategoryId",
+                table: "Categories",
+                column: "ParentCategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReceiptDBO_VendorId",
-                table: "ReceiptDBO",
-                column: "VendorId");
+                name: "IX_ProductCategories_CategoryId",
+                table: "ProductCategories",
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReceiptItemDBO_ReceiptDBOId",
-                table: "ReceiptItemDBO",
+                name: "IX_ReceiptItems_ProductId",
+                table: "ReceiptItems",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReceiptItems_ReceiptDBOId",
+                table: "ReceiptItems",
                 column: "ReceiptDBOId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RoleClaimDBO_RoleId",
-                table: "RoleClaimDBO",
+                name: "IX_Receipts_UserId",
+                table: "Receipts",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Receipts_VendorId",
+                table: "Receipts",
+                column: "VendorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoleClaims_RoleId",
+                table: "RoleClaims",
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
-                table: "RoleDBO",
+                table: "Roles",
                 column: "NormalizedName",
                 unique: true,
                 filter: "[NormalizedName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserClaimDBO_UserId",
-                table: "UserClaimDBO",
+                name: "IX_UserClaims_UserId",
+                table: "UserClaims",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserLogins_UserId",
+                table: "UserLogins",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRoles_RoleId",
+                table: "UserRoles",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
-                table: "UserDBO",
+                table: "Users",
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
-                table: "UserDBO",
+                table: "Users",
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserLoginDBO_UserId",
-                table: "UserLoginDBO",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserRoleDBO_RoleId",
-                table: "UserRoleDBO",
-                column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_VendorDBO_AddressId",
-                table: "VendorDBO",
+                name: "IX_VendorHQs_AddressId",
+                table: "VendorHQs",
                 column: "AddressId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_VendorDBO_HQId",
-                table: "VendorDBO",
+                name: "IX_Vendors_AddressId",
+                table: "Vendors",
+                column: "AddressId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vendors_HQId",
+                table: "Vendors",
                 column: "HQId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_VendorHQDBO_AddressId",
-                table: "VendorHQDBO",
-                column: "AddressId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ReceiptItemDBO");
+                name: "ProductCategories");
 
             migrationBuilder.DropTable(
-                name: "RoleClaimDBO");
+                name: "ReceiptItems");
 
             migrationBuilder.DropTable(
-                name: "UserClaimDBO");
+                name: "RoleClaims");
 
             migrationBuilder.DropTable(
-                name: "UserLoginDBO");
+                name: "UserClaims");
 
             migrationBuilder.DropTable(
-                name: "UserRoleDBO");
+                name: "UserLogins");
 
             migrationBuilder.DropTable(
-                name: "UserTokenDBO");
+                name: "UserRoles");
 
             migrationBuilder.DropTable(
-                name: "ReceiptDBO");
+                name: "UserTokens");
 
             migrationBuilder.DropTable(
-                name: "RoleDBO");
+                name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "UserDBO");
+                name: "Products");
 
             migrationBuilder.DropTable(
-                name: "VendorDBO");
+                name: "Receipts");
 
             migrationBuilder.DropTable(
-                name: "VendorHQDBO");
+                name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "AddressDBO");
+                name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Vendors");
+
+            migrationBuilder.DropTable(
+                name: "VendorHQs");
+
+            migrationBuilder.DropTable(
+                name: "Addresses");
         }
     }
 }
