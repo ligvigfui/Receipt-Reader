@@ -182,6 +182,61 @@ namespace RR.Data.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("RR.Data.DataBaseObjects.GroupDBO", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Groups");
+                });
+
+            modelBuilder.Entity("RR.Data.DataBaseObjects.ImageDBO", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("Data")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Images", t =>
+                        {
+                            t.HasCheckConstraint("CK_Owner", "(UserId IS NOT NULL AND GroupId IS NULL) OR (UserId IS NULL AND GroupId IS NOT NULL)");
+                        });
+                });
+
             modelBuilder.Entity("RR.Data.DataBaseObjects.ProductCategoryDBO", b =>
                 {
                     b.Property<int>("ProductId")
@@ -225,11 +280,16 @@ namespace RR.Data.Migrations
                     b.Property<DateTime?>("DateTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ImageId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ReceiptId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("VendorId")
@@ -237,11 +297,19 @@ namespace RR.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("ImageId");
+
                     b.HasIndex("UserId");
 
                     b.HasIndex("VendorId");
 
-                    b.ToTable("Receipts");
+                    b.ToTable("Receipts", t =>
+                        {
+                            t.HasCheckConstraint("CK_Owner", "(UserId IS NOT NULL AND GroupId IS NULL) OR (UserId IS NULL AND GroupId IS NOT NULL)")
+                                .HasName("CK_Owner1");
+                        });
                 });
 
             modelBuilder.Entity("RR.Data.DataBaseObjects.ReceiptItemDBO", b =>
@@ -255,6 +323,9 @@ namespace RR.Data.Migrations
                     b.Property<int>("Measurement")
                         .HasColumnType("int");
 
+                    b.Property<string>("OriginalRecognizedName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<float>("PricePerQuantity")
                         .HasColumnType("real");
 
@@ -264,9 +335,6 @@ namespace RR.Data.Migrations
                     b.Property<float>("Quantity")
                         .HasColumnType("real");
 
-                    b.Property<int>("ReceiptDBOId")
-                        .HasColumnType("int");
-
                     b.Property<int>("ReceiptId")
                         .HasColumnType("int");
 
@@ -274,7 +342,7 @@ namespace RR.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("ReceiptDBOId");
+                    b.HasIndex("ReceiptId");
 
                     b.ToTable("ReceiptItems");
                 });
@@ -369,6 +437,24 @@ namespace RR.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("RR.Data.DataBaseObjects.UserGroupDBO", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserGroupRole")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "GroupId");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("UserGroups");
                 });
 
             modelBuilder.Entity("RR.Data.DataBaseObjects.UserRoleDBO", b =>
@@ -485,6 +571,23 @@ namespace RR.Data.Migrations
                     b.Navigation("ParentCategory");
                 });
 
+            modelBuilder.Entity("RR.Data.DataBaseObjects.ImageDBO", b =>
+                {
+                    b.HasOne("RR.Data.DataBaseObjects.GroupDBO", "Group")
+                        .WithMany("Images")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("RR.Data.DataBaseObjects.UserDBO", "User")
+                        .WithMany("Images")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Group");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RR.Data.DataBaseObjects.ProductCategoryDBO", b =>
                 {
                     b.HasOne("RR.Data.DataBaseObjects.CategoryDBO", "Category")
@@ -506,17 +609,30 @@ namespace RR.Data.Migrations
 
             modelBuilder.Entity("RR.Data.DataBaseObjects.ReceiptDBO", b =>
                 {
+                    b.HasOne("RR.Data.DataBaseObjects.GroupDBO", "Group")
+                        .WithMany("Receipts")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("RR.Data.DataBaseObjects.ImageDBO", "Image")
+                        .WithMany()
+                        .HasForeignKey("ImageId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("RR.Data.DataBaseObjects.UserDBO", "User")
                         .WithMany("Receipts")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("RR.Data.DataBaseObjects.VendorDBO", "Vendor")
                         .WithMany("Receipts")
                         .HasForeignKey("VendorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("Image");
 
                     b.Navigation("User");
 
@@ -531,15 +647,34 @@ namespace RR.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("RR.Data.DataBaseObjects.ReceiptDBO", "ReceiptDBO")
+                    b.HasOne("RR.Data.DataBaseObjects.ReceiptDBO", "Receipt")
                         .WithMany("Items")
-                        .HasForeignKey("ReceiptDBOId")
+                        .HasForeignKey("ReceiptId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Product");
 
-                    b.Navigation("ReceiptDBO");
+                    b.Navigation("Receipt");
+                });
+
+            modelBuilder.Entity("RR.Data.DataBaseObjects.UserGroupDBO", b =>
+                {
+                    b.HasOne("RR.Data.DataBaseObjects.GroupDBO", "Group")
+                        .WithMany("UserGroups")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RR.Data.DataBaseObjects.UserDBO", "User")
+                        .WithMany("UserGroups")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RR.Data.DataBaseObjects.UserRoleDBO", b =>
@@ -570,7 +705,7 @@ namespace RR.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("RR.Data.DataBaseObjects.VendorHQDBO", "HQ")
-                        .WithMany("VendorDBOs")
+                        .WithMany("Vendors")
                         .HasForeignKey("HQId")
                         .OnDelete(DeleteBehavior.Restrict);
 
@@ -597,6 +732,15 @@ namespace RR.Data.Migrations
                     b.Navigation("SubCategories");
                 });
 
+            modelBuilder.Entity("RR.Data.DataBaseObjects.GroupDBO", b =>
+                {
+                    b.Navigation("Images");
+
+                    b.Navigation("Receipts");
+
+                    b.Navigation("UserGroups");
+                });
+
             modelBuilder.Entity("RR.Data.DataBaseObjects.ProductDBO", b =>
                 {
                     b.Navigation("ProductCategories");
@@ -616,7 +760,11 @@ namespace RR.Data.Migrations
 
             modelBuilder.Entity("RR.Data.DataBaseObjects.UserDBO", b =>
                 {
+                    b.Navigation("Images");
+
                     b.Navigation("Receipts");
+
+                    b.Navigation("UserGroups");
 
                     b.Navigation("UserRoles");
                 });
@@ -628,7 +776,7 @@ namespace RR.Data.Migrations
 
             modelBuilder.Entity("RR.Data.DataBaseObjects.VendorHQDBO", b =>
                 {
-                    b.Navigation("VendorDBOs");
+                    b.Navigation("Vendors");
                 });
 #pragma warning restore 612, 618
         }

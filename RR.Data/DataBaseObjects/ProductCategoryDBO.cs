@@ -1,6 +1,7 @@
 namespace RR.Data.DataBaseObjects;
 
 [Tables(nameof(ProductCategoryDBO))]
+[PrimaryKey(nameof(ProductId), nameof(CategoryId))]
 public class ProductCategoryDBO
 {
     public int ProductId { get; set; }

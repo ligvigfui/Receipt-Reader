@@ -6,7 +6,7 @@ public class VendorHQDBO
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
-    public virtual List<VendorDBO> VendorDBOs { get; set; } = [];
+    public virtual List<VendorDBO> Vendors { get; set; } = [];
     public string Name { get; set; }
     public int AddressId { get; set; }
     public virtual AddressDBO Address { get; set; }
