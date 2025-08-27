@@ -30,6 +30,4 @@ public class AccountController(
         var token = await securityService.RefreshTokenAsync();
         return CreatedAtAction(nameof(RefreshToken), new { Token = token });
     }
-
-
 }
