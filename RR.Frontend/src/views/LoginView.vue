@@ -9,6 +9,7 @@
 import { reactive } from 'vue'
 // import ApiClient
 import { ApiClient } from '@/utils/ApiClient'
+import { setToken } from '@/store/authStore'
 
 const state = reactive({
   loginCredentials: {
@@ -18,26 +19,14 @@ const state = reactive({
 })
 
 async function OnSubmit() {
-  const result1 = await ApiClient.get<string>(
+  const result = await ApiClient.post<AuthResponse>(
     'account/login',
-    null,
-    state.loginCredentials
+    state.loginCredentials,
   )
-  const response = await fetch('https://localhost:5001/account/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      email: state.loginCredentials.email,
-      password: state.loginCredentials.password
-    })
-  })
-  const result = await response.json()
-  if (response.ok) {
-    alert(result.token)
+  if (result.isOk()) {
+    setToken(result.token)
   } else {
-    let errors: string[] = result.errors;
+    let errors: string[] = result.errors ?? [];
     alert(errors.join('\n'))
   }
 }

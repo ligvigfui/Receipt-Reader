@@ -1,0 +1,3 @@
+class AuthResponse {
+  token!: string
+}

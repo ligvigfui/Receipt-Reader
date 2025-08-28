@@ -102,7 +102,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 .HasForeignKey(v => v.HQId)
                 .OnDelete(DeleteBehavior.SetNull);
         });
-        var exclusiveOwnershipConstraint = $"({nameof(ReceiptDBO.UserId)} IS NOT NULL AND {nameof(ReceiptDBO.GroupId)} IS NULL) OR ({nameof(ReceiptDBO.UserId)} IS NULL AND {nameof(ReceiptDBO.GroupId)} IS NOT NULL)";
+        
         modelBuilder.Entity<ReceiptDBO>(r =>
         {
             r.HasOne(r => r.Vendor)
@@ -117,12 +117,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 .WithOne(ri => ri.Receipt)
                 .HasForeignKey(ri => ri.ReceiptId)
                 .IsRequired();
-            r.ToTable(r => r.HasCheckConstraint("CK_Owner", exclusiveOwnershipConstraint));
-        });
-
-        modelBuilder.Entity<ImageDBO>(i =>
-        {
-            i.ToTable(i => i.HasCheckConstraint("CK_Owner", exclusiveOwnershipConstraint));
         });
 
         // Iterate over all entity types in the model

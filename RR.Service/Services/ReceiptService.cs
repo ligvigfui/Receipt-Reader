@@ -13,8 +13,8 @@ public class ReceiptService(
         var userDBO = await securityService.GetUserAsync();
         var newReceipt = new ReceiptDBO
         {
-            UserId = receipt.GroupName is not null ? null : userDBO.Id,
-            GroupId = context.Groups.FirstOrDefault(g => g.Name == receipt.GroupName)?.Id,
+            UserId = userDBO.Id,
+            GroupId = receipt.GroupName is null ? null : context.Groups.FirstOrDefault(g => g.Name == receipt.GroupName)?.Id,
             VendorId = await vendorRepository.CreateVendorAsync(receipt.Vendor),
             Items = [.. await Task.WhenAll(
                 receipt.Items.Select(async i =>
