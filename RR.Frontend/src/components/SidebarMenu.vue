@@ -10,6 +10,10 @@
           <span v-if="showText">{{ isAuthenticated ? 'Profile' : 'Log In' }}</span>
         </button>
       </slot>
+      <button @click="goReceipts">
+        <span class="icon">🧾</span>
+        <span v-if="showText">Receipts</span>
+      </button>
       <!-- Add more menu items here if needed -->
     </div>
   </div>
@@ -36,6 +40,10 @@ function onLoginProfileClick() {
   }
 }
 
+function goReceipts() {
+  router.push('/receipts')
+}
+
 function handleResize() {
   isMobile.value = window.innerWidth < 768
 }
@@ -57,7 +65,7 @@ const showText = computed(() => isMobile.value || menuOpen.value)
   top: 0;
   height: 100vh;
   width: 100vw;
-  background: #222;
+  background: var(--color-background-soft);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -78,7 +86,7 @@ const showText = computed(() => isMobile.value || menuOpen.value)
 .sandwich {
   background: none;
   border: none;
-  color: #fff;
+  color: var(--color-text);
   font-size: 2rem;
   margin: 1rem 0;
   cursor: pointer;
@@ -90,18 +98,15 @@ const showText = computed(() => isMobile.value || menuOpen.value)
   gap: 1rem;
 }
 .menu button {
-  background: #444;
-  color: #fff;
+  background: var(--color-button);
+  color: var(--color-heading);
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
 }
 .menu button:hover {
-  background: #666;
+  background: var(--color-button-hover);
 }
 .icon {
   font-size: 1.5em;
