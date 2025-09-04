@@ -2,7 +2,6 @@ import type { Vendor } from './Vendor'
 import type { ReceiptItem } from './ReceiptItem'
 
 export interface Receipt {
-  groupName?: string
   vendor: Vendor
   items: ReceiptItem[]
   total: number

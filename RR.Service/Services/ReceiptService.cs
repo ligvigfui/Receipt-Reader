@@ -8,13 +8,13 @@ public class ReceiptService(
     ApplicationDbContext context
 ) : IReceiptService
 {
-    public async Task<ReceiptDBO> CreateReceiptAsync(Receipt receipt)
+    public async Task<ReceiptDBO> CreateReceiptAsync(Receipt receipt, string? groupName = null)
     {
         var userDBO = await securityService.GetUserAsync();
         var newReceipt = new ReceiptDBO
         {
             UserId = userDBO.Id,
-            GroupId = receipt.GroupName is null ? null : context.Groups.FirstOrDefault(g => g.Name == receipt.GroupName)?.Id,
+            GroupId = groupName is null ? null : context.Groups.FirstOrDefault(g => g.Name == groupName)?.Id,
             VendorId = await vendorRepository.CreateVendorAsync(receipt.Vendor),
             Items = [.. await Task.WhenAll(
                 receipt.Items.Select(async i =>

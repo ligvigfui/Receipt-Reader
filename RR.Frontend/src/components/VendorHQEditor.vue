@@ -10,7 +10,10 @@ import type { VendorHQ } from '@/DTOs/VendorHQ'
 import AddressEditor from './AddressEditor.vue'
 const props = defineProps<{ vendorHQ: VendorHQ }>()
 const emit = defineEmits(['update:vendorHQ'])
-const localVendorHQ = reactive({ ...props.vendorHQ })
+const localVendorHQ = reactive({ 
+    ...props.vendorHQ, 
+    address: props.vendorHQ.address ?? { country: '', region: '', postalCode: '', city: '', streetAddress: '', note: '' }
+})
 watch(localVendorHQ, (val) => emit('update:vendorHQ', { ...val }))
 function emitUpdate() { emit('update:vendorHQ', { ...localVendorHQ }) }
 </script>

@@ -6,10 +6,12 @@ public class ReceiptController(
     IReceiptService receiptService
 ) : ControllerBase
 {
-    [HttpPost]
-    public async Task<IActionResult> PostAsync([FromBody][Required] Receipt receipt)
+    [HttpPost("Create")]
+    public async Task<IActionResult> PostAsync(
+        [FromBody][Required] Receipt receipt,
+        string? groupName = null)
     {
-        var newReceipt = await receiptService.CreateReceiptAsync(receipt);
+        var newReceipt = await receiptService.CreateReceiptAsync(receipt, groupName);
         return CreatedAtAction(nameof(PostAsync), newReceipt);
     }
 
