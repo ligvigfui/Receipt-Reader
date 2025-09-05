@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpExceptions", "HttpExcep
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RR.Settings", "RR.Settings\RR.Settings.csproj", "{A6ED3FA1-7CFB-4741-A571-E52A20B62D34}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RR.Tests", "RR.Tests\RR.Tests.csproj", "{CE6D5201-21CD-46D1-B3FF-7B5DF41FE103}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{A6ED3FA1-7CFB-4741-A571-E52A20B62D34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6ED3FA1-7CFB-4741-A571-E52A20B62D34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6ED3FA1-7CFB-4741-A571-E52A20B62D34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE6D5201-21CD-46D1-B3FF-7B5DF41FE103}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE6D5201-21CD-46D1-B3FF-7B5DF41FE103}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE6D5201-21CD-46D1-B3FF-7B5DF41FE103}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE6D5201-21CD-46D1-B3FF-7B5DF41FE103}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
