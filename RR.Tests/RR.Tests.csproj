@@ -18,6 +18,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RR.Service\RR.Service.csproj" />
+	  <None Include="..\RR.API\appsettings.secrets.json">
+		  <Link>appsettings.secrets.json</Link>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
   </ItemGroup>
 
   <ItemGroup>

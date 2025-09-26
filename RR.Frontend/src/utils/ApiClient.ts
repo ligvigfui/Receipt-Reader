@@ -1,7 +1,7 @@
 export class ApiClient {
   private static baseUrl: string = import.meta.env.VITE_API_BASE_URL
 
-  private static async fetchWithAuth(url: string, init: RequestInit = {}, query?: Record<string, any>): Promise<Response> {
+  private static async fetchWithAuth(url: string, init: RequestInit = {}, query?: Record<string, any>): Promise<any> {
     let fullUrl = this.baseUrl + url
     if (query && Object.keys(query).length > 0) {
       const qs = Object.entries(query)
@@ -15,7 +15,21 @@ export class ApiClient {
     if (token) {
       headers.set('Authorization', `Bearer ${token}`)
     }
-    return fetch(fullUrl, { ...init, headers })
+    try {
+      const result = await fetch(fullUrl, { ...init, headers })
+      const json = await result.json()
+      return {
+        ...json,
+        isOk: () => result.ok,
+      }
+    }
+    catch (error) {
+      return {
+        isOk: () => false,
+        type: 'FetchError',
+        errors: ['Server is unreachable.'],
+      }
+    }
   }
 
   static async get<S>(
@@ -34,11 +48,9 @@ export class ApiClient {
     query?: Record<string, any>,
     init: RequestInit = {}
   ): Promise<(S & { isOk: () => boolean } & GlobalErrorResponse) | (S & { isOk: () => boolean } & E)> {
-    const res = await this.fetchWithAuth(url, { ...init, method: 'GET' }, query)
-    const data = await res.json()
+    const data = await this.fetchWithAuth(url, { ...init, method: 'GET' }, query)
     return {
       ...data,
-      isOk: () => res.ok
     } as S & { isOk: () => boolean } & E
   }
 
@@ -63,17 +75,15 @@ export class ApiClient {
     query?: Record<string, any>,
     init: RequestInit = {}
   ): Promise<(S & { isOk: () => boolean } & GlobalErrorResponse) | (S & { isOk: () => boolean } & E)> {
-    const res = await this.fetchWithAuth(url, {
+    const data = await this.fetchWithAuth(url, {
       ...init,
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...(init.headers || {}) },
       body: JSON.stringify(body)
     },
     query)
-    const data = await res.json()
     return {
       ...data,
-      isOk: () => res.ok
     } as S & { isOk: () => boolean } & E
   }
 

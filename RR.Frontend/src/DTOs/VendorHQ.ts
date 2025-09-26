@@ -1,6 +1,13 @@
-import type { Address } from './Address'
+import { Address } from './Address';
 
-export interface VendorHQ {
-  name: string
-  address?: Address
+export class VendorHQ {
+  name: string;
+  address: Address;
+  taxNumber: string;
+
+  constructor() {
+    this.name = '';
+    this.address = new Address();
+    this.taxNumber = '';
+  }
 }

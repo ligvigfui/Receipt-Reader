@@ -28,7 +28,7 @@ public class ReceiptService(
                 )
             )],
             ReceiptId = receipt.ReceiptId,
-            DateTime = receipt.DateTime,
+            TransactionDateTime = receipt.TransactionDateTime,
         };
         newReceipt = await receiptRepository.CreateReceipt(newReceipt);
         return newReceipt;

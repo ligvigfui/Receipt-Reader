@@ -1,4 +1,50 @@
 @import './base.css';
+/* --- Global Button Styles --- */
+button {
+  background: var(--color-button);
+  color: var(--color-heading);
+  border: none;
+  border-radius: 6px;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+button:disabled {
+  background: var(--color-border);
+  color: var(--color-text);
+  cursor: not-allowed;
+}
+button:hover:not(:disabled) {
+  background: var(--color-button-hover);
+}
+
+/* Button with icon (like upload-btn) */
+button.with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+/* Default/primary (green) button, e.g. for submit/login */
+button.default {
+  background: var(--color-accent);
+}
+button.default:hover:not(:disabled) {
+  background: var(--color-accent-dark);
+}
+
+button.danger {
+  background: var(--color-danger);
+}
+button.danger:hover:not(:disabled) {
+  background: var(--color-danger-hover);
+}
+
+button.circle {
+  border-radius: 50%;
+  width: 2em;
+  height: 2em;
+}
 
 input, select, textarea {
   background: var(--color-bg);
@@ -25,7 +71,7 @@ input, select, textarea {
 }
 
 #app {
-  max-width: 1280px;
+  --max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   font-weight: normal;
@@ -53,7 +99,6 @@ a,
 
   #app {
     display: grid;
-    grid-template-columns: 1fr 1fr;
     padding: 0 2rem;
   }
 }

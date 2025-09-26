@@ -10,6 +10,8 @@ public class VendorRepository(ApplicationDbContext context) : IVendorRepository
 
     public async Task<VendorDBO?> GetVendorByIdAsync(int vendorId) =>
         await context.Vendors.FirstOrDefaultAsync(vendor => vendor.Id == vendorId);
+    public async Task<VendorDBO?> GetVendorAsync(string? name, Address? address) =>
+        await context.Vendors.FirstOrDefaultAsync(vendor =>  vendor.Name == name);
 
     public async Task<int> CreateVendorAsync(VendorDBO vendor)
     {

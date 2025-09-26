@@ -1,33 +1,61 @@
 using Azure;
-using Azure.AI.DocumentIntelligence;
-//using Azure.AI.FormRecognizer.DocumentAnalysis;
+using Azure.AI.FormRecognizer.DocumentAnalysis;
+
 namespace RR.Service.Services;
 
-public class DocumentIntelligenceService : IDocumentIntelligenceService
+public class DocumentIntelligenceService(
+    IOptions<AzureDocumentIntelligenceAPISettings> options
+    ) : IDocumentIntelligenceService
 {
-    // Replace with your actual endpoint and key, or inject via configuration
+    readonly AzureDocumentIntelligenceAPISettings Settings = options.Value;
 
     public async Task<string> ExtractReceiptDataFromImageAsync(byte[] imageBytes)
     {
-        var credential = new AzureKeyCredential(apiKey);
-        var client = new DocumentIntelligenceClient(new Uri(endpoint), credential);
-            
-        var binaryData = new BinaryData(imageBytes);
-        var operation = await client.AnalyzeDocumentAsync(WaitUntil.Completed, "prebuilt-receipt", binaryData);
+        var credential = new AzureKeyCredential(Settings.ApiKey);
+        var client = new DocumentAnalysisClient(new Uri(Settings.Endpoint), credential);
+        using var stream = new MemoryStream(imageBytes);
+        AnalyzeDocumentOperation operation = await client.AnalyzeDocumentAsync(WaitUntil.Completed, "prebuilt-receipt", stream);
+        var receipts = operation.Value;
+        return ExtractReceiptDataFromTextAsync( receipts );
+    }
+    //public string MyExtractReceiptDataFromTextAsync(AnalyzeResult analyzeResult)
+    //{
+    //    var sb = new StringBuilder();
+    //    foreach (AnalyzedDocument receipt in analyzeResult.Documents)
+    //    {
+    //        var transactionDate = receipt.Fields.GetField(FieldType.TransactionDate)?.AsDate();
+    //        var transactionTime = receipt.Fields.GetField(FieldType.TransactionTime)?.AsTime();
 
-        AnalyzeResult receipts = operation.Value;
-
-        // To see the list of the supported fields returned by service and its corresponding types, consult:
+    //        DateTime? transactionDateTime = (transactionDate, transactionTime) switch
+    //        {
+    //            (DateTimeOffset date, TimeSpan time) => date.Date + time,
+    //            (DateTimeOffset date, null) => date.Date,
+    //            (null, TimeSpan time) => DateTime.Today + time,
+    //            _ => null
+    //        };
+    //        var receiptDBO = new ReceiptDBO()
+    //        {
+    //            TransactionDateTime = transactionDateTime,
+    //            Vendor = new VendorDBO()
+    //            {
+    //                Name = receipt.Fields.GetField(FieldType.MerchantName)?.AsString(),
+    //                PhoneNumber = receipt.Fields.GetField(FieldType.MerchantPhoneNumber)?.AsString(),
+    //                Address = receipt.Fields.GetField(FieldType.MerchantAddress)?.AsString(),
+    //            },
+    //        };
+    //    }
+    //}
+    public string ExtractReceiptDataFromTextAsync(AnalyzeResult analyzeResult)
+    {
         // https://aka.ms/formrecognizer/receiptfields
         var sb = new StringBuilder();
-        foreach (AnalyzedDocument receipt in receipts.Documents)
+        foreach (AnalyzedDocument receipt in analyzeResult.Documents)
         {
             if (receipt.Fields.TryGetValue("MerchantName", out DocumentField merchantNameField))
             {
                 if (merchantNameField.FieldType == DocumentFieldType.String)
                 {
-                    string merchantName = merchantNameField.ValueString;
-
+                    string merchantName = merchantNameField.Value.AsString();
                     sb.AppendLine($"Merchant Name: '{merchantName}', with confidence {merchantNameField.Confidence}");
                 }
             }
@@ -36,8 +64,7 @@ public class DocumentIntelligenceService : IDocumentIntelligenceService
             {
                 if (transactionDateField.FieldType == DocumentFieldType.Date)
                 {
-                    DateTimeOffset? transactionDate = transactionDateField.ValueDate;
-
+                    var transactionDate = transactionDateField.Value.AsDate();
                     sb.AppendLine($"Transaction Date: '{transactionDate}', with confidence {transactionDateField.Confidence}");
                 }
             }
@@ -46,30 +73,26 @@ public class DocumentIntelligenceService : IDocumentIntelligenceService
             {
                 if (itemsField.FieldType == DocumentFieldType.List)
                 {
-                    foreach (DocumentField itemField in itemsField.ValueList)
+                    foreach (DocumentField itemField in itemsField.Value.AsList())
                     {
                         sb.AppendLine("Item:");
-
                         if (itemField.FieldType == DocumentFieldType.Dictionary)
                         {
-                            IReadOnlyDictionary<string, DocumentField> itemFields = itemField.ValueDictionary;
-
+                            var itemFields = itemField.Value.AsDictionary();
                             if (itemFields.TryGetValue("Description", out DocumentField itemDescriptionField))
                             {
                                 if (itemDescriptionField.FieldType == DocumentFieldType.String)
                                 {
-                                    string itemDescription = itemDescriptionField.ValueString;
-
+                                    string itemDescription = itemDescriptionField.Value.AsString();
                                     sb.AppendLine($"  Description: '{itemDescription}', with confidence {itemDescriptionField.Confidence}");
                                 }
                             }
-
                             if (itemFields.TryGetValue("TotalPrice", out DocumentField itemTotalPriceField))
                             {
                                 if (itemTotalPriceField.FieldType == DocumentFieldType.Currency)
                                 {
-                                    double? itemTotalPrice = itemTotalPriceField.ValueCurrency.Amount;
-
+                                    var currency = itemTotalPriceField.Value.AsCurrency();
+                                    double? itemTotalPrice = currency.Amount;
                                     sb.AppendLine($"  Total Price: '{itemTotalPrice}', with confidence {itemTotalPriceField.Confidence}");
                                 }
                             }
@@ -82,12 +105,46 @@ public class DocumentIntelligenceService : IDocumentIntelligenceService
             {
                 if (totalField.FieldType == DocumentFieldType.Currency)
                 {
-                    double total = totalField.ValueCurrency.Amount;
-
+                    var currency = totalField.Value.AsCurrency();
+                    double? total = currency.Amount;
                     sb.AppendLine($"Total: '{total}', with confidence '{totalField.Confidence}'");
                 }
             }
         }
         return sb.ToString();
     }
+}
+public enum ItemFieldType
+{
+    Description,
+    Price,
+    Quantity,
+    QuantityUnit,
+    TotalPrice,
+}
+public enum FieldType
+{
+    ReceiptType,
+    MerchantName,
+    MerchantPhoneNumber,
+    MerchantAddress,
+    TransactionDate,
+    TransactionTime,
+    Total,
+    Subtotal,
+    Tax,
+    Tip,
+    Items,
+    Name,
+    Quantity,
+    Price,
+    TotalPrice,
+}
+
+public static class DocumentFiledExtensions
+{
+    public static DocumentFieldValue? GetField(this IReadOnlyDictionary<string, DocumentField> fields, FieldType fieldType) =>
+        fields.TryGetValue(fieldType.ToString(), out var field) ? field?.Value : null;
+    public static DocumentFieldValue? GetField(this IReadOnlyDictionary<string, DocumentField> fields, ItemFieldType fieldType) =>
+        fields.TryGetValue(fieldType.ToString(), out var field) ? field?.Value : null;
 }

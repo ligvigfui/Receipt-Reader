@@ -1,25 +1,17 @@
 <template>
-    <div class="vendor-editor">
-        <input v-model="localVendor.name" placeholder="Vendor Name" @input="emitUpdate" />
-        <input v-model="localVendor.taxNumber" placeholder="Tax Number" @input="emitUpdate" />
-        <AddressEditor v-model:address="localVendor.address" />
-        <VendorHQEditor v-model:vendorHQ="localVendor.vendorHQ" />
-    </div>
+    <VendorHQEditor v-model:vendorHQ="vendor.vendorHQ">
+        <div class="vendor-editor">
+            <input v-model="vendor.name" placeholder="Vendor Name" />
+            <AddressEditor v-model:address="vendor.address" />
+        </div>
+    </VendorHQEditor>
 </template>
 <script setup lang="ts">
-import { reactive, watch } from 'vue'
 import type { Vendor } from '@/DTOs/Vendor'
 import VendorHQEditor from './VendorHQEditor.vue'
 import AddressEditor from './AddressEditor.vue'
-const props = defineProps<{ vendor: Vendor }>()
-const emit = defineEmits(['update:vendor'])
-const localVendor = reactive({ 
-    ...props.vendor, 
-    address: props.vendor.address ?? { country: '', region: '', postalCode: '', city: '', streetAddress: '', note: '' },
-    vendorHQ: props.vendor.vendorHQ ?? { name: '' }
-})
-watch(localVendor, (val) => emit('update:vendor', { ...val }))
-function emitUpdate() { emit('update:vendor', { ...localVendor }) }
+import { defineModel } from 'vue';
+const vendor = defineModel<Vendor>('vendor', { required: true });
 </script>
 <style scoped>
 .vendor-editor input {

@@ -1,6 +1,6 @@
 class GlobalErrorResponse {
-    Type!: string
+    type!: string
     errors!: string[]
     dataObject: any
-    StackTrace: string | undefined
+    stackTrace: string | undefined
 }

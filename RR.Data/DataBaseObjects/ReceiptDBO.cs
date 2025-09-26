@@ -15,15 +15,15 @@ public class ReceiptDBO
     public virtual List<ReceiptItemDBO> Items { get; set; }
     public double Total => Items.Sum(i => i.Price);
     public string? ReceiptId { get; set; }
-    public DateTime? DateTime { get; set; }
+    public DateTime? TransactionDateTime { get; set; }
     public int? ImageId { get; set; }
     public virtual ImageDBO? Image { get; set; }
 
     public static implicit operator Receipt(ReceiptDBO receiptDBO) => new()
     {
         Vendor = receiptDBO.Vendor,
-        Items = receiptDBO.Items.Select(i => (ReceiptItem)i).ToList(),
+        Items = [.. receiptDBO.Items.Select(i => (ReceiptItem)i)],
         ReceiptId = receiptDBO.ReceiptId,
-        DateTime = receiptDBO.DateTime,
+        TransactionDateTime = receiptDBO.TransactionDateTime,
     };
 }
