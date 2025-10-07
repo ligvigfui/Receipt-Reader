@@ -81,11 +81,10 @@ const showText = computed(() => isMobile.value || menuOpen.value)
   transform: translateX(-50%);
   background: none;
   border: none;
-  color: var(--color-heading);
-  font-size: 2rem;
-  cursor: pointer;
+  font-size: 1.7rem;
   display: flex;
   align-items: center;
+  padding: 0;
   justify-content: center;
   width: 2em;
   height: 2em;
@@ -129,7 +128,7 @@ const showText = computed(() => isMobile.value || menuOpen.value)
   user-select: none;
 }
 .menu-link:hover {
-  background: var(--color-button-hover);
+  background: var(--color-button);
 }
 .menu-divider {
   width: 90%;

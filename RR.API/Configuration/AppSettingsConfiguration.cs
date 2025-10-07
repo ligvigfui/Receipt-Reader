@@ -14,9 +14,10 @@ public static class AppSettingsConfiguration
         void Configure<T>(string section) where T : class =>
             builder.Services.Configure<T>(builder.Configuration.GetSection(section));
 
+        Configure<AzureBlobStorageSettings>("AzureBlobStorage");
+        Configure<AzureDocumentIntelligenceAPISettings>("AzureDocumentIntelligenceAPI");
         Configure<JWTSettings>("JWT");
         Configure<SwaggerSettings>("Swagger");
-        Configure<AzureDocumentIntelligenceAPISettings>("AzureDocumentIntelligenceAPI");
 
         return builder;
     }

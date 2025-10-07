@@ -1,10 +1,12 @@
 using Azure;
 using Azure.AI.FormRecognizer.DocumentAnalysis;
+using System.Threading.Tasks;
 
 namespace RR.Service.Services;
 
 public class DocumentIntelligenceService(
-    IOptions<AzureDocumentIntelligenceAPISettings> options
+    IOptions<AzureDocumentIntelligenceAPISettings> options,
+    ISecurityService securityService
     ) : IDocumentIntelligenceService
 {
     readonly AzureDocumentIntelligenceAPISettings Settings = options.Value;
@@ -18,33 +20,49 @@ public class DocumentIntelligenceService(
         var receipts = operation.Value;
         return ExtractReceiptDataFromTextAsync( receipts );
     }
-    //public string MyExtractReceiptDataFromTextAsync(AnalyzeResult analyzeResult)
-    //{
-    //    var sb = new StringBuilder();
-    //    foreach (AnalyzedDocument receipt in analyzeResult.Documents)
-    //    {
-    //        var transactionDate = receipt.Fields.GetField(FieldType.TransactionDate)?.AsDate();
-    //        var transactionTime = receipt.Fields.GetField(FieldType.TransactionTime)?.AsTime();
+    public async Task<string> MyExtractReceiptDataFromTextAsync(AnalyzeResult analyzeResult, int? userGroupId)
+    {
+        foreach (AnalyzedDocument receipt in analyzeResult.Documents)
+        {
+            var transactionDate = receipt.Fields.GetField(FieldType.TransactionDate)?.AsDate();
+            var transactionTime = receipt.Fields.GetField(FieldType.TransactionTime)?.AsTime();
 
-    //        DateTime? transactionDateTime = (transactionDate, transactionTime) switch
-    //        {
-    //            (DateTimeOffset date, TimeSpan time) => date.Date + time,
-    //            (DateTimeOffset date, null) => date.Date,
-    //            (null, TimeSpan time) => DateTime.Today + time,
-    //            _ => null
-    //        };
-    //        var receiptDBO = new ReceiptDBO()
-    //        {
-    //            TransactionDateTime = transactionDateTime,
-    //            Vendor = new VendorDBO()
-    //            {
-    //                Name = receipt.Fields.GetField(FieldType.MerchantName)?.AsString(),
-    //                PhoneNumber = receipt.Fields.GetField(FieldType.MerchantPhoneNumber)?.AsString(),
-    //                Address = receipt.Fields.GetField(FieldType.MerchantAddress)?.AsString(),
-    //            },
-    //        };
-    //    }
-    //}
+            DateTime? transactionDateTime = (transactionDate, transactionTime) switch
+            {
+                (DateTimeOffset date, TimeSpan time) => date.Date + time,
+                (DateTimeOffset date, null) => date.Date,
+                (null, TimeSpan time) => DateTime.Today + time,
+                _ => null
+            };
+            var receiptDBO = new ReceiptDBO()
+            {
+                User = await securityService.GetUserAsync(),
+                GroupId = userGroupId,
+                TransactionDateTime = transactionDateTime,
+                Vendor = new VendorDBO()
+                {
+                    Name = receipt.Fields.GetField(FieldType.MerchantName)?.AsString(),
+                    Address = new()
+                    {
+                        StreetAddress = receipt.Fields.GetField(FieldType.MerchantAddress)?.AsString(),
+                    }
+                },
+                Items = receipt.Fields.GetField(FieldType.Items)?.AsList()
+                    .Select(item => item.Value.AsDictionary())
+                    .Select(item => new ReceiptItemDBO()
+                    {
+                        OriginalRecognizedName = item.GetField(ItemFieldType.Description)?.AsString(),
+                        Product = new ProductDBO()
+                        {
+                            Name = item.GetField(ItemFieldType.Description)?.AsString(),
+                        },
+                        Quantity = (float)item.GetField(ItemFieldType.Quantity)?.AsDouble(),
+                        PricePerQuantity = (float)item.GetField(ItemFieldType.Price)?.AsCurrency().Amount,
+                    }).ToList() ?? [],
+            };
+        }
+        return "";
+    }
     public string ExtractReceiptDataFromTextAsync(AnalyzeResult analyzeResult)
     {
         // https://aka.ms/formrecognizer/receiptfields

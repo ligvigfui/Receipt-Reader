@@ -1,11 +1,13 @@
-﻿using System.Reflection;
+﻿using Azure.Storage.Blobs;
+using System.Reflection;
 
 namespace RR.API.Configuration;
 
 public static class DependencyIncejtionConfiguration
 {
-    public static IServiceCollection ConfigureDependencyInjection(this IServiceCollection services)
+    public static IHostApplicationBuilder ConfigureDependencyInjection(this IHostApplicationBuilder builder)
     {
+        var services = builder.Services;
         var assembliesToScan = new[]
         {
             Assembly.GetExecutingAssembly(),
@@ -24,7 +26,11 @@ public static class DependencyIncejtionConfiguration
 
         services.AddHttpContextAccessor();
         services.AddTransient<AutoRefreshTokenMiddleware>();
-
-        return services;
+        services.AddSingleton(x =>
+        {
+            var settings = x.GetRequiredService<IOptions<AzureBlobStorageSettings>>().Value;
+            return new BlobServiceClient(settings.ConnectionString);
+        });
+        return builder;
     }
 }

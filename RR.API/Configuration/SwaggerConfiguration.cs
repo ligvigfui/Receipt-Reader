@@ -4,7 +4,7 @@ namespace RR.API.Configuration;
 
 public static class SwaggerConfiguration
 {
-    public static void ConfigureSwagger(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder ConfigureSwagger(this WebApplicationBuilder builder)
     {
 
         builder.Services.AddSwaggerGen(c =>
@@ -52,5 +52,6 @@ public static class SwaggerConfiguration
             };
             System.Diagnostics.Process.Start(psi);
         }
+        return builder;
     }
 }

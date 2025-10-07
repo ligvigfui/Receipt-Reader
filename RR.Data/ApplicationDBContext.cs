@@ -12,6 +12,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<ImageDBO> Images { get; set; }
     public DbSet<ReceiptItemDBO> ReceiptItems { get; set; }
     public DbSet<ProductDBO> Products { get; set; }
+    public DbSet<ProductAliasDBO> ProductAliases { get; set; }
     public DbSet<ProductCategoryDBO> ProductCategories { get; set; }
     public DbSet<CategoryDBO> Categories { get; set; }
 
@@ -134,19 +135,24 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .WithMany(p => p.ReceiptItems)
             .HasForeignKey(ri => ri.ProductId);
 
-        modelBuilder.Entity<ProductDBO>()
-            .HasMany(p => p.Categories)
-            .WithMany(c => c.Products)
-            .UsingEntity<ProductCategoryDBO>(
-                j => j
-                    .HasOne(pc => pc.Category)
-                    .WithMany(c => c.ProductCategories)
-                    .HasForeignKey(pc => pc.CategoryId),
-                j => j
-                    .HasOne(pc => pc.Product)
-                    .WithMany(p => p.ProductCategories)
-                    .HasForeignKey(pc => pc.ProductId)
-            );
+        modelBuilder.Entity<ProductDBO>(p =>
+        {
+            p.HasMany(p => p.Categories)
+                .WithMany(c => c.Products)
+                .UsingEntity<ProductCategoryDBO>(
+                    j => j
+                        .HasOne(pc => pc.Category)
+                        .WithMany(c => c.ProductCategories)
+                        .HasForeignKey(pc => pc.CategoryId),
+                    j => j
+                        .HasOne(pc => pc.Product)
+                        .WithMany(p => p.ProductCategories)
+                        .HasForeignKey(pc => pc.ProductId)
+                );
+            p.HasMany(p => p.Aliases)
+                .WithOne(a => a.Product)
+                .HasForeignKey(a => a.ProductId);
+        });
 
         modelBuilder.Entity<CategoryDBO>()
             .HasMany(c => c.SubCategories)

@@ -1,25 +1,19 @@
 ﻿namespace RR.Service.Services;
 
-public class SecurityService : ISecurityService
+public class SecurityService(
+    IOptions<JWTSettings> jWTConfiguration,
+    IHttpContextAccessor httpContextAccessor,
+    IUserRepository userRepository,
+    IGroupRepository groupRepository
+    ) : ISecurityService
 {
+    private readonly JWTSettings JWTSettings = jWTConfiguration.Value;
+    private readonly SigningCredentials signingCredentials = new(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jWTConfiguration.Value.Key)), SecurityAlgorithms.HmacSha256);
 
-    private readonly JWTSettings JWTSettings;
-    private readonly IHttpContextAccessor httpContextAccessor;
-    private readonly IUserRepository userRepository;
-    private readonly SigningCredentials signingCredentials;
-
-    public SecurityService(
-        IOptions<JWTSettings> jWTConfiguration,
-        IHttpContextAccessor httpContextAccessor,
-        IUserRepository userRepository
-    )
+    public async Task<UserGroupDBO> GetUserGroup(int groupId)
     {
-        JWTSettings = jWTConfiguration.Value;
-        this.httpContextAccessor = httpContextAccessor;
-        this.userRepository = userRepository;
-
-        var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jWTConfiguration.Value.Key));
-        signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+        var userEmail = httpContextAccessor.HttpContext!.GetUserEmail();
+        return await groupRepository.GetUserGroup(userEmail, groupId);
     }
 
     public async Task<string> RegisterAsync(Login login)

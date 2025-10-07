@@ -2,4 +2,5 @@
 
 public interface IGroupRepository
 {
+    Task<UserGroupDBO> GetUserGroup(string userEmail, int groupId);
 }

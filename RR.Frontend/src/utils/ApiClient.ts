@@ -32,17 +32,19 @@ export class ApiClient {
     }
   }
 
+  // Overload signatures
   static async get<S>(
     url: string,
     query?: Record<string, any>,
     init?: RequestInit
   ): Promise<S & { isOk: () => boolean } & GlobalErrorResponse>
-  static async get<S, E = {}>(
+  static async get<S, E>(
     url: string,
     query?: Record<string, any>,
     init?: RequestInit
   ): Promise<S & { isOk: () => boolean } & E>
 
+  // Implementation
   static async get<S, E = {}>(
     url: string,
     query?: Record<string, any>,

@@ -17,7 +17,7 @@ public class DocumentIntelligenceServiceTests
             .AddJsonFile("appsettings.secrets.json")
             .Build();
         var azureSettings = configuration.GetSection("AzureDocumentIntelligenceAPI").Get<AzureDocumentIntelligenceAPISettings>();
-        var service = new DocumentIntelligenceService(Options.Create(azureSettings));
+        var service = new DocumentIntelligenceService(Options.Create(azureSettings), null);
         var imagePath = Path.Combine("SampleImages", "IMG_20250729_202516.jpg");
         var imageBytes = await File.ReadAllBytesAsync(imagePath);
 

@@ -7,7 +7,7 @@ public class TablesAttribute(string name) : TableAttribute(Pluralize(name))
     {
         if (name.EndsWith("DBO"))
             name = name[..^3];
-        if (name.EndsWith("ss"))
+        if (name.EndsWith('s'))
             return name + "es";
         else if (name.EndsWith('y'))
             return name[..^1] + "ies";

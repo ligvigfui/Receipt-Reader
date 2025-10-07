@@ -10,7 +10,7 @@ public class ReceiptItemDBO
     public virtual ReceiptDBO Receipt { get; set; }
     public int ProductId { get; set; }
     public virtual ProductDBO Product { get; set; }
-    public string? OriginalRecognizedName { get; set; }
+    public required string OriginalRecognizedName { get; set; }
     public float Quantity { get; set; }
     public Measurement Measurement { get; set; }
     public float PricePerQuantity { get; set; }

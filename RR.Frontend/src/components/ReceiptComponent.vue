@@ -26,18 +26,12 @@
 import VendorEditor from '@/components/VendorEditor.vue'
 import ReceiptItemEditor from '@/components/ReceiptItemEditor.vue'
 import type { Receipt } from '@/DTOs/Receipt'
+import { ReceiptItem } from '@/DTOs/ReceiptItem';
 
 const receipt = defineModel<Receipt>('receipt', { required: true });
 
 function addItem() {
-  receipt.value.items.push({
-    name: '',
-    originalRecognizedName: '',
-    quantity: 1,
-    measurement: 'pieces',
-    pricePerQuantity: 0,
-    price: 0
-  })
+  receipt.value.items.push(new ReceiptItem())
 }
 function calcTotal() {
   return receipt.value.items.reduce((sum, i) => sum + (i.quantity * i.pricePerQuantity), 0)
@@ -46,8 +40,8 @@ function deleteItem(iIdx: number) {
   receipt.value.items.splice(iIdx, 1)
 }
 </script>
-<style scoped>
 
+<style scoped>
 .receipt-card {
   background: var(--color-background-card);
   color: var(--color-text);

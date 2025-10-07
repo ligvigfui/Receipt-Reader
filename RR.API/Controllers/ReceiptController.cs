@@ -15,4 +15,10 @@ public class ReceiptController(
         return CreatedAtAction(nameof(PostAsync), newReceipt);
     }
 
+    //[HttpPatch("Update")]
+    //public async Task<IActionResult> Update([FromBody][Required] Receipt receipt)
+    //{
+
+    //}
+
 }

@@ -196,8 +196,9 @@ function onCrop(croppedDataUrl: string) {
   z-index: 1000;
 }
 .modal-content {
-  background: #fff;
+  background: var(--color-background-card);
   border-radius: 10px;
+  border: 1px solid var(--color-border);
   padding: 2em;
   position: relative;
   min-width: 340px;
@@ -208,12 +209,10 @@ function onCrop(croppedDataUrl: string) {
 }
 .close-btn {
   position: absolute;
+  background: none;
   top: 0.5em;
   right: 0.5em;
-  background: none;
-  border: none;
   font-size: 2em;
-  cursor: pointer;
 }
 
 /* Option rectangles */

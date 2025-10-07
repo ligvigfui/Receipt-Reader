@@ -5,6 +5,7 @@ button {
   color: var(--color-heading);
   border: none;
   border-radius: 6px;
+  padding: 0.6em 1.2em;
   font-size: 1.2em;
   cursor: pointer;
   transition: background 0.2s;
@@ -23,6 +24,10 @@ button.with-icon {
   display: inline-flex;
   align-items: center;
   gap: 0.5em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-heading);
 }
 
 /* Default/primary (green) button, e.g. for submit/login */
@@ -44,6 +49,12 @@ button.circle {
   border-radius: 50%;
   width: 2em;
   height: 2em;
+  padding: 0;
+}
+
+.button-group {
+  display: flex;
+  gap: 1em;
 }
 
 input, select, textarea {
@@ -52,22 +63,6 @@ input, select, textarea {
   border: 1px solid var(--color-border);
   border-radius: 4px;
   padding: 0.2em 0.5em;
-}
-
-.add-item-btn {
-  background: var(--color-button);
-  color: var(--color-text);
-}
-.add-item-btn:hover {
-  background: var(--color-button-hover);
-}
-
-.delete-item-btn {
-  background: var(--color-danger);
-  color: var(--color-text);
-}
-.delete-item-btn:hover {
-  background: var(--color-danger-hover);
 }
 
 #app {

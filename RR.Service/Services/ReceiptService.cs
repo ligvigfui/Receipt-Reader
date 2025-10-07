@@ -20,6 +20,7 @@ public class ReceiptService(
                 receipt.Items.Select(async i =>
                     new ReceiptItemDBO
                     {
+                        OriginalRecognizedName = i.OriginalRecognizedName,
                         Product = await productRepository.GetOrCreateProductAsync(i.Name),
                         Quantity = i.Quantity,
                         Measurement = i.Measurement,
@@ -27,10 +28,14 @@ public class ReceiptService(
                     }
                 )
             )],
-            ReceiptId = receipt.ReceiptId,
             TransactionDateTime = receipt.TransactionDateTime,
         };
         newReceipt = await receiptRepository.CreateReceipt(newReceipt);
         return newReceipt;
     }
+
+    //public async Task<Receipt> UpdateReceiptAsync(Receipt receipt)
+    //{
+
+    //}
 }

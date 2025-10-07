@@ -12,5 +12,6 @@ public class ImageDBO
     public virtual GroupDBO? Group { get; set; }
     public string FileName { get; set; }
     public string ContentType { get; set; }
-    public byte[] Data { get; set; }
+    public bool IsPublic { get; set; }
+    public string BlobGuid { get; set; }
 }

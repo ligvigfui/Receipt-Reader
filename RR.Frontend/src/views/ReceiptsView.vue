@@ -2,10 +2,10 @@
   <div class="receipts-view">
     <div class="receipts-header">
       <h1>Receipts</h1>
-      <div class="nav-buttons">
-        <button class="nav-btn" @click="prevReceipt" :disabled="currentReceiptIndex === 0">Previous</button>
+      <div class="button-group">
+        <button @click="prevReceipt" :disabled="currentReceiptIndex === 0">Previous</button>
         <button class="danger" @click="deleteReceipt">Delete</button>
-        <button class="nav-btn" @click="nextReceipt" :disabled="currentReceiptIndex === receipts.length - 1 || receipts.length === 0">Next</button>
+        <button @click="nextReceipt" :disabled="currentReceiptIndex === receipts.length - 1 || receipts.length === 0">Next</button>
       </div>
     </div>
     <div v-if="receipts.length === 0">No receipts found.</div>
@@ -15,10 +15,10 @@
       />
     </div>
     <div class="upload-section">
-      <div class="upload-btn-group">
-        <button class="upload-btn" @click="openPhotoPopup">New from image</button>
-        <button class="upload-btn" @click="addNewReceipt">New receipt</button>
-        <button class="upload-btn" @click="saveReceipts">
+      <div class="button-group">
+        <button @click="openPhotoPopup">New from image</button>
+        <button @click="addNewReceipt" :disabled="hasEmptyReceipt">New receipt</button>
+        <button @click="saveReceipts">
           <span class="save-icon">💾</span>
           Save
         </button>
@@ -32,10 +32,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { Receipt } from '@/DTOs/Receipt'
 import PhotoCapture from '@/components/PhotoCapture.vue'
 import ReceiptComponent from '@/components/ReceiptComponent.vue'
+import { ApiClient } from '@/utils/ApiClient'
 
 const receipts = ref<Receipt[]>([])
 const currentReceiptIndex = ref(0)
@@ -44,6 +45,11 @@ const RECEIPTS_STORAGE_KEY = 'receipts-draft-v1'
 
 const showPhotoPopup = ref(false)
 const imageUrl = ref<string | null>(null)
+
+const hasEmptyReceipt = computed(() => {
+  var result = receipts.value.some(r => !r.items || r.isEmpty());
+  return result;
+})
 
 function openPhotoPopup() {
   showPhotoPopup.value = true
@@ -66,7 +72,8 @@ onMounted(() => {
   const saved = localStorage.getItem(RECEIPTS_STORAGE_KEY)
   if (saved) {
     try {
-      receipts.value = JSON.parse(saved)
+      const arr = JSON.parse(saved)
+      receipts.value = arr.map((r: any) => Receipt.from(r));
     } catch {
       receipts.value = [ new Receipt() ]
     }
@@ -75,15 +82,16 @@ onMounted(() => {
   }
 })
 
-watch(receipts, (val) => {
-  localStorage.setItem(RECEIPTS_STORAGE_KEY, JSON.stringify(val))
-}, { deep: true })
-
 function addNewReceipt() {
   receipts.value.push(new Receipt())
 }
-function saveReceipts() {
+async function saveReceipts() {
   // TODO: Implement save logic (API call, etc.)
+  localStorage.setItem(RECEIPTS_STORAGE_KEY, JSON.stringify(receipts.value))
+  const result = await ApiClient.post<AuthResponse>(
+    'account/login',
+    state.loginCre
+  )
   alert('Receipts saved!')
 }
 function nextReceipt() {
@@ -103,60 +111,17 @@ function prevReceipt() {
   background: var(--color-background-soft);
   color: var(--color-background);
 }
-h1 {
-  color: var(--color-heading);
-}
 .receipts-header {
   display: flex;
   align-items: center;
   gap: 1.5em;
   margin-bottom: 1.5em;
 }
-.nav-buttons {
-  display: flex;
-  gap: 0.5em;
-}
-.nav-btn {
-  background: var(--color-button);
-  color: var(--color-heading);
-  border: none;
-  border-radius: 6px;
-  padding: 0.5em 1.2em;
-  font-size: 1em;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.nav-btn:disabled {
-  background: var(--color-border);
-  color: var(--color-text);
-  cursor: not-allowed;
-}
-.nav-btn:hover:not(:disabled) {
-  background: var(--color-button-hover);
-}
 .upload-section {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 2em;
-}
-.upload-btn-group {
-  display: flex;
-  gap: 1em;
-  margin-bottom: 1em;
-}
-.upload-btn {
-  background: var(--color-button);
-  color: var(--color-heading);
-  border: none;
-  border-radius: 6px;
-  padding: 0.7em 2em;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.upload-btn:hover {
-  background: var(--color-button-hover);
 }
 .image-preview img {
   max-width: 320px;

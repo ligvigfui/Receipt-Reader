@@ -20,8 +20,8 @@ builder.Services.AddSwaggerGen();
 builder.ConfigureAppSettings()
     .ConfigureDatabase()
     .ConfigureAuthentication()
-    .ConfigureSwagger();
-builder.Services.ConfigureDependencyInjection();
+    .ConfigureSwagger()
+    .ConfigureDependencyInjection();
 GlobalErrorResponse.IsDevelopment = builder.Environment.IsDevelopment();
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("RequireAdministratorRole", policy => policy.RequireRole(Role.Admin.ToString()));
