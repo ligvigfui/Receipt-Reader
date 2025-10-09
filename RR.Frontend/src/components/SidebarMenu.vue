@@ -15,7 +15,11 @@
         <span class="icon">🧾</span>
         <span v-if="showText">Receipts</span>
       </div>
-      <!-- Add more menu items here if needed -->
+      <div class="menu-divider"></div>
+      <div class="menu-link" @click="goProductEditor">
+        <span class="icon">📦</span>
+        <span v-if="showText">Product Editor</span>
+      </div>
     </div>
   </div>
 </template>
@@ -44,6 +48,10 @@ function onLoginProfileClick() {
 
 function goReceipts() {
   router.push('/receipts')
+}
+
+function goProductEditor() {
+  router.push('/product-editor')
 }
 
 function handleResize() {
