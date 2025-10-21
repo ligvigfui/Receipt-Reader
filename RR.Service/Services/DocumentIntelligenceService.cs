@@ -51,7 +51,6 @@ public class DocumentIntelligenceService(
                     .Select(item => item.Value.AsDictionary())
                     .Select(item => new ReceiptItemDBO()
                     {
-                        OriginalRecognizedName = item.GetField(ItemFieldType.Description)?.AsString(),
                         Product = new ProductDBO()
                         {
                             Name = item.GetField(ItemFieldType.Description)?.AsString(),

@@ -20,6 +20,11 @@
         <span class="icon">📦</span>
         <span v-if="showText">Product Editor</span>
       </div>
+      <div class="menu-divider"></div>
+      <div class="menu-link" @click="goProducts">
+        <span class="icon">📋</span>
+        <span v-if="showText">Products</span>
+      </div>
     </div>
   </div>
 </template>
@@ -44,6 +49,9 @@ function onLoginProfileClick() {
   } else {
     router.push('/login')
   }
+}
+function goProducts() {
+  router.push('/products')
 }
 
 function goReceipts() {

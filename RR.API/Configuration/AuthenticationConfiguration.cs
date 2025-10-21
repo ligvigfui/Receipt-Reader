@@ -2,7 +2,7 @@
 
 public static class AuthenticationConfiguration
 {
-    public static WebApplicationBuilder ConfigureAuthentication(this WebApplicationBuilder builder)
+    public static IHostApplicationBuilder ConfigureAuthentication(this IHostApplicationBuilder builder)
     {
         var jwtConfiguration = builder.Configuration.GetSection("JWT").Get<JWTSettings>()!;
 

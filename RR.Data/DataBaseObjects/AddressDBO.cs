@@ -1,7 +1,7 @@
 ﻿namespace RR.Data.DataBaseObjects;
 
 [Tables(nameof(AddressDBO))]
-public class AddressDBO
+public class AddressDBO : AbstractPublicOwnable
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

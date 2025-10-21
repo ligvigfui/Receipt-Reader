@@ -4,24 +4,28 @@ public class ReceiptService(
     IProductRepository productRepository,
     IReceiptRepository receiptRepository,
     ISecurityService securityService,
-    IVendorRepository vendorRepository,
-    ApplicationDbContext context
+    IVendorRepository vendorRepository
 ) : IReceiptService
 {
-    public async Task<ReceiptDBO> CreateReceiptAsync(Receipt receipt, string? groupName = null)
+    public async Task<Receipt> CreateReceiptAsync(Receipt receipt)
     {
         var userDBO = await securityService.GetUserAsync();
+        var userGroup = await securityService.EnsureCanEditOwn(receipt);
         var newReceipt = new ReceiptDBO
         {
-            UserId = userDBO.Id,
-            GroupId = groupName is null ? null : context.Groups.FirstOrDefault(g => g.Name == groupName)?.Id,
+            UserShortId = userDBO.ShortId,
+            GroupId = userGroup?.GroupId,
             VendorId = await vendorRepository.CreateVendorAsync(receipt.Vendor),
             Items = [.. await Task.WhenAll(
                 receipt.Items.Select(async i =>
                     new ReceiptItemDBO
                     {
-                        OriginalRecognizedName = i.OriginalRecognizedName,
-                        Product = await productRepository.GetOrCreateProductAsync(i.Name),
+                        Product = await productRepository.GetOrCreateProductWithAliasAsync(
+                            i,
+                            receipt.Language,
+                            userDBO,
+                            userGroup
+                        ),
                         Quantity = i.Quantity,
                         Measurement = i.Measurement,
                         PricePerQuantity = i.PricePerQuantity,

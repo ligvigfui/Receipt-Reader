@@ -2,8 +2,8 @@
 
 public class ReceiptItem
 {
-    public required string OriginalRecognizedName { get; set; }
     public required string Name { get; set; }
+    public Product? Product { get; set; }
     public float Quantity { get; set; }
     public Measurement Measurement { get; set; }
     public required float PricePerQuantity { get; set; }

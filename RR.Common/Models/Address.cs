@@ -1,7 +1,9 @@
 ﻿namespace RR.Common.Models;
 
-public class Address
+public class Address : IOwnable
 {
+    public int? Id { get; set; }
+    public int? GroupId { get; set; }
     public string? Country { get; set; }
     public string? Region { get; set; }
     public string? PostalCode { get; set; }

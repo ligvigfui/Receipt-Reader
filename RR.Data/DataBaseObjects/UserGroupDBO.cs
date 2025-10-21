@@ -1,13 +1,14 @@
 ﻿namespace RR.Data.DataBaseObjects;
 
 [Tables(nameof(UserGroupDBO))]
-[PrimaryKey(nameof(UserId), nameof(GroupId))]
+[PrimaryKey(nameof(UserShortId), nameof(GroupId))]
 public class UserGroupDBO
 {
-    public string UserId { get; set; }
+    public int UserShortId { get; set; }
     public virtual UserDBO User { get; set; }
     public int GroupId { get; set; }
     public virtual GroupDBO Group { get; set; }
+    public bool AreItemsDefaultPublic { get; set; }
     public bool CanRead { get; set; } = true;
     public bool CanReadOwn { get; set; } = true;
     public bool CanEdit { get; set; } = false;

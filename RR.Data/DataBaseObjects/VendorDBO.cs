@@ -1,7 +1,7 @@
 ﻿namespace RR.Data.DataBaseObjects;
 
 [Tables(nameof(VendorDBO))]
-public class VendorDBO
+public class VendorDBO : AbstractPublicOwnable
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

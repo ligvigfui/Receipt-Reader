@@ -2,9 +2,9 @@
 
 public static class DataBaseConfiguration
 {
-    public static WebApplicationBuilder ConfigureDatabase(this WebApplicationBuilder builder)
+    public static IHostApplicationBuilder ConfigureDatabase(this IHostApplicationBuilder builder)
     {
-        var connectionString = "Server=(LocalDB)\\MSSQLLocalDB;Database=RRDB;Trusted_Connection=True;MultipleActiveResultSets=true;";
+        var connectionString = builder.Configuration.Get<ConnectionStringsSettings>()!.ReceiptReaderDatabase;
         builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
             options.UseLazyLoadingProxies()
                 .UseSqlServer(connectionString, options =>

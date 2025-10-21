@@ -2,7 +2,7 @@
 
 public static class AppSettingsConfiguration
 {
-    public static WebApplicationBuilder ConfigureAppSettings(this WebApplicationBuilder builder)
+    public static IHostApplicationBuilder ConfigureAppSettings(this IHostApplicationBuilder builder)
     {
         var environment = /*builder.Configuration.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ??*/ builder.Environment.EnvironmentName;
         builder.Configuration
@@ -18,6 +18,7 @@ public static class AppSettingsConfiguration
         Configure<AzureDocumentIntelligenceAPISettings>("AzureDocumentIntelligenceAPI");
         Configure<JWTSettings>("JWT");
         Configure<SwaggerSettings>("Swagger");
+        Configure<ConnectionStringsSettings>("ConnectionStrings");
 
         return builder;
     }

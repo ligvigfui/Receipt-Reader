@@ -12,27 +12,6 @@ namespace RR.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Addresses",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Region = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Line1 = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Line2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Number = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Appratment = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Addresses", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
                 {
@@ -58,24 +37,12 @@ namespace RR.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AreItemsDefaultPublic = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Groups", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Products",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Products", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -97,6 +64,10 @@ namespace RR.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ShortId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AreItemsDefaultPublic = table.Column<bool>(type: "bit", nullable: false),
+                    DefaultLanguage = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -115,50 +86,7 @@ namespace RR.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "VendorHQs",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AddressId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_VendorHQs", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_VendorHQs_Addresses_AddressId",
-                        column: x => x.AddressId,
-                        principalTable: "Addresses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProductCategories",
-                columns: table => new
-                {
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductCategories", x => new { x.ProductId, x.CategoryId });
-                    table.ForeignKey(
-                        name: "FK_ProductCategories_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ProductCategories_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                    table.UniqueConstraint("AK_Users_ShortId", x => x.ShortId);
                 });
 
             migrationBuilder.CreateTable(
@@ -183,33 +111,98 @@ namespace RR.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Addresses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Region = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StreetAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserShortId = table.Column<int>(type: "int", nullable: true),
+                    GroupId = table.Column<int>(type: "int", nullable: true),
+                    IsPublic = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Addresses_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Addresses_Users_UserShortId",
+                        column: x => x.UserShortId,
+                        principalTable: "Users",
+                        principalColumn: "ShortId",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Images",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    GroupId = table.Column<int>(type: "int", nullable: true),
                     FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ContentType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Data = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
+                    BlobGuid = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserShortId = table.Column<int>(type: "int", nullable: true),
+                    GroupId = table.Column<int>(type: "int", nullable: true),
+                    IsPublic = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Images", x => x.Id);
-                    table.CheckConstraint("CK_Owner", "(UserId IS NOT NULL AND GroupId IS NULL) OR (UserId IS NULL AND GroupId IS NOT NULL)");
                     table.ForeignKey(
                         name: "FK_Images_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
-                        name: "FK_Images_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Images_Users_UserShortId",
+                        column: x => x.UserShortId,
                         principalTable: "Users",
+                        principalColumn: "ShortId",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Quantity = table.Column<float>(type: "real", nullable: true),
+                    Measurement = table.Column<int>(type: "int", nullable: true),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserShortId = table.Column<int>(type: "int", nullable: true),
+                    GroupId = table.Column<int>(type: "int", nullable: true),
+                    IsPublic = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Products_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Products_Users_UserShortId",
+                        column: x => x.UserShortId,
+                        principalTable: "Users",
+                        principalColumn: "ShortId",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -237,13 +230,20 @@ namespace RR.Data.Migrations
                 name: "UserGroups",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserShortId = table.Column<int>(type: "int", nullable: false),
                     GroupId = table.Column<int>(type: "int", nullable: false),
-                    UserGroupRole = table.Column<int>(type: "int", nullable: false)
+                    AreItemsDefaultPublic = table.Column<bool>(type: "bit", nullable: false),
+                    CanRead = table.Column<bool>(type: "bit", nullable: false),
+                    CanReadOwn = table.Column<bool>(type: "bit", nullable: false),
+                    CanEdit = table.Column<bool>(type: "bit", nullable: false),
+                    CanEditOwn = table.Column<bool>(type: "bit", nullable: false),
+                    CanAddMembers = table.Column<bool>(type: "bit", nullable: false),
+                    CanRemoveMembers = table.Column<bool>(type: "bit", nullable: false),
+                    CanEditGroupPermissions = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserGroups", x => new { x.UserId, x.GroupId });
+                    table.PrimaryKey("PK_UserGroups", x => new { x.UserShortId, x.GroupId });
                     table.ForeignKey(
                         name: "FK_UserGroups_Groups_GroupId",
                         column: x => x.GroupId,
@@ -251,10 +251,10 @@ namespace RR.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_UserGroups_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_UserGroups_Users_UserShortId",
+                        column: x => x.UserShortId,
                         principalTable: "Users",
-                        principalColumn: "Id",
+                        principalColumn: "ShortId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -323,6 +323,100 @@ namespace RR.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "VendorHQs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AddressId = table.Column<int>(type: "int", nullable: true),
+                    TaxNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserShortId = table.Column<int>(type: "int", nullable: true),
+                    GroupId = table.Column<int>(type: "int", nullable: true),
+                    IsPublic = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VendorHQs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_VendorHQs_Addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_VendorHQs_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_VendorHQs_Users_UserShortId",
+                        column: x => x.UserShortId,
+                        principalTable: "Users",
+                        principalColumn: "ShortId",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductAliases",
+                columns: table => new
+                {
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Language = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    UserShortId = table.Column<int>(type: "int", nullable: true),
+                    GroupId = table.Column<int>(type: "int", nullable: true),
+                    IsPublic = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductAliases", x => new { x.Language, x.Name });
+                    table.ForeignKey(
+                        name: "FK_ProductAliases_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_ProductAliases_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ProductAliases_Users_UserShortId",
+                        column: x => x.UserShortId,
+                        principalTable: "Users",
+                        principalColumn: "ShortId",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductCategories",
+                columns: table => new
+                {
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductCategories", x => new { x.ProductId, x.CategoryId });
+                    table.ForeignKey(
+                        name: "FK_ProductCategories_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ProductCategories_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Vendors",
                 columns: table => new
                 {
@@ -330,8 +424,10 @@ namespace RR.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     HQId = table.Column<int>(type: "int", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AddressId = table.Column<int>(type: "int", nullable: false),
-                    TaxNumber = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    AddressId = table.Column<int>(type: "int", nullable: true),
+                    UserShortId = table.Column<int>(type: "int", nullable: true),
+                    GroupId = table.Column<int>(type: "int", nullable: true),
+                    IsPublic = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -342,6 +438,18 @@ namespace RR.Data.Migrations
                         principalTable: "Addresses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Vendors_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Vendors_Users_UserShortId",
+                        column: x => x.UserShortId,
+                        principalTable: "Users",
+                        principalColumn: "ShortId",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Vendors_VendorHQs_HQId",
                         column: x => x.HQId,
@@ -356,23 +464,22 @@ namespace RR.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    GroupId = table.Column<int>(type: "int", nullable: true),
                     VendorId = table.Column<int>(type: "int", nullable: false),
-                    ReceiptId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ImageId = table.Column<int>(type: "int", nullable: true)
+                    TransactionDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ImageId = table.Column<int>(type: "int", nullable: true),
+                    UserShortId = table.Column<int>(type: "int", nullable: true),
+                    GroupId = table.Column<int>(type: "int", nullable: true),
+                    IsPublic = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Receipts", x => x.Id);
-                    table.CheckConstraint("CK_Owner1", "(UserId IS NOT NULL AND GroupId IS NULL) OR (UserId IS NULL AND GroupId IS NOT NULL)");
                     table.ForeignKey(
                         name: "FK_Receipts_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Receipts_Images_ImageId",
                         column: x => x.ImageId,
@@ -380,11 +487,11 @@ namespace RR.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Receipts_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Receipts_Users_UserShortId",
+                        column: x => x.UserShortId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "ShortId",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Receipts_Vendors_VendorId",
                         column: x => x.VendorId,
@@ -401,7 +508,6 @@ namespace RR.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ReceiptId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    OriginalRecognizedName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Quantity = table.Column<float>(type: "real", nullable: false),
                     Measurement = table.Column<int>(type: "int", nullable: false),
                     PricePerQuantity = table.Column<float>(type: "real", nullable: false)
@@ -424,6 +530,16 @@ namespace RR.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Addresses_GroupId",
+                table: "Addresses",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Addresses_UserShortId",
+                table: "Addresses",
+                column: "UserShortId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Categories_ParentCategoryId",
                 table: "Categories",
                 column: "ParentCategoryId");
@@ -434,14 +550,39 @@ namespace RR.Data.Migrations
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Images_UserId",
+                name: "IX_Images_UserShortId",
                 table: "Images",
-                column: "UserId");
+                column: "UserShortId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductAliases_GroupId",
+                table: "ProductAliases",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductAliases_ProductId",
+                table: "ProductAliases",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductAliases_UserShortId",
+                table: "ProductAliases",
+                column: "UserShortId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductCategories_CategoryId",
                 table: "ProductCategories",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_GroupId",
+                table: "Products",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_UserShortId",
+                table: "Products",
+                column: "UserShortId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ReceiptItems_ProductId",
@@ -464,9 +605,9 @@ namespace RR.Data.Migrations
                 column: "ImageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Receipts_UserId",
+                name: "IX_Receipts_UserShortId",
                 table: "Receipts",
-                column: "UserId");
+                column: "UserShortId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Receipts_VendorId",
@@ -523,19 +664,42 @@ namespace RR.Data.Migrations
                 column: "AddressId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_VendorHQs_GroupId",
+                table: "VendorHQs",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VendorHQs_UserShortId",
+                table: "VendorHQs",
+                column: "UserShortId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Vendors_AddressId",
                 table: "Vendors",
                 column: "AddressId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Vendors_GroupId",
+                table: "Vendors",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Vendors_HQId",
                 table: "Vendors",
                 column: "HQId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vendors_UserShortId",
+                table: "Vendors",
+                column: "UserShortId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ProductAliases");
+
             migrationBuilder.DropTable(
                 name: "ProductCategories");
 
@@ -579,16 +743,16 @@ namespace RR.Data.Migrations
                 name: "Vendors");
 
             migrationBuilder.DropTable(
-                name: "Groups");
-
-            migrationBuilder.DropTable(
-                name: "Users");
-
-            migrationBuilder.DropTable(
                 name: "VendorHQs");
 
             migrationBuilder.DropTable(
                 name: "Addresses");
+
+            migrationBuilder.DropTable(
+                name: "Groups");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

@@ -4,7 +4,7 @@ namespace RR.API.Configuration;
 
 public static class SwaggerConfiguration
 {
-    public static WebApplicationBuilder ConfigureSwagger(this WebApplicationBuilder builder)
+    public static IHostApplicationBuilder ConfigureSwagger(this IHostApplicationBuilder builder)
     {
 
         builder.Services.AddSwaggerGen(c =>

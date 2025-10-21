@@ -3,10 +3,12 @@
 [Tables(nameof(UserDBO))]
 public class UserDBO : IdentityUser
 {
-    public bool IsNewImageDefaultPublic { get; set; } = true;
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int ShortId { get; set; }
+    public bool AreItemsDefaultPublic { get; set; } = true;
+    [StringLength(5)]
+    public string? DefaultLanguage { get; set; }
     public virtual List<GroupDBO> Groups { get; set; }
-    public virtual List<ReceiptDBO> Receipts { get; set; }
-    public virtual List<ImageDBO> Images { get; set; }
     public virtual List<UserRoleDBO> UserRoles { get; set; }
     internal virtual List<UserGroupDBO> UserGroups { get; set; }
 }

@@ -50,14 +50,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 .WithOne(ur => ur.User)
                 .HasForeignKey(ur => ur.UserId)
                 .IsRequired();
-            u.HasMany(u => u.Receipts)
-                .WithOne(r => r.User)
-                .HasForeignKey(r => r.UserId)
-                .OnDelete(DeleteBehavior.SetNull);
-            u.HasMany(u => u.Images)
-                .WithOne(i => i.User)
-                .HasForeignKey(ur => ur.UserId)
-                .OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<GroupDBO>(g =>
@@ -68,20 +60,13 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                     j => j
                         .HasOne(ug => ug.User)
                         .WithMany(u => u.UserGroups)
-                        .HasForeignKey(ug => ug.UserId),
+                        .HasForeignKey(ug => ug.UserShortId)
+                        .HasPrincipalKey(u => u.ShortId),
                     j => j
                         .HasOne(ug => ug.Group)
                         .WithMany(g => g.UserGroups)
                         .HasForeignKey(ug => ug.GroupId)
                 );
-            g.HasMany(g => g.Receipts)
-                .WithOne(i => i.Group)
-                .HasForeignKey(i => i.GroupId)
-                .OnDelete(DeleteBehavior.SetNull);
-            g.HasMany(g => g.Images)
-                .WithOne(i => i.Group)
-                .HasForeignKey(i => i.GroupId)
-                .OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<VendorHQDBO>(hq =>
@@ -158,5 +143,38 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .HasMany(c => c.SubCategories)
             .WithOne(c => c.ParentCategory)
             .HasForeignKey(c => c.ParentCategoryId);
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            var clrType = entityType.ClrType;
+            if (typeof(AbstractPublicOwnable).IsAssignableFrom(clrType) && clrType != typeof(AbstractPublicOwnable))
+            {
+                // Use reflection to call your helper method for this type
+                var method = typeof(ModelBuilderExtensions)
+                    .GetMethod(nameof(ModelBuilderExtensions.ConfigurePublicOwnable))!
+                    .MakeGenericMethod(clrType);
+                method.Invoke(null, [modelBuilder]);
+            }
+        }
+    }
+}
+public static class ModelBuilderExtensions
+{
+    public static void ConfigurePublicOwnable<T>(this ModelBuilder modelBuilder)
+        where T : AbstractPublicOwnable
+    {
+        modelBuilder.Entity<T>(b =>
+        {
+            b.HasOne(x => x.User)
+                .WithMany()
+                .HasForeignKey(x => x.UserShortId)
+                .HasPrincipalKey(u => u.ShortId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            b.HasOne(x => x.Group)
+                .WithMany()
+                .HasForeignKey(x => x.GroupId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
     }
 }

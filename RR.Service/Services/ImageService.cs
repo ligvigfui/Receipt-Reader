@@ -49,15 +49,15 @@ public class ImageService(
 
     public async Task<Uri> GetImageURI(string fileName, int? groupId)
     {
-        string userId = (await securityService.GetUserAsync()).Id;
+        var userId = (await securityService.GetUserAsync()).ShortId;
         if (groupId is not null)
         {
             var userGroup = await securityService.GetUserGroup(groupId.Value);
-            if (userGroup.UserId != userId)
+            if (userGroup.UserShortId != userId)
             {
                 if (!userGroup.CanRead)
                     throw new UnauthorizedAccessException("Please request read access from a group administrator");
-                userId = userGroup.UserId;
+                userId = userGroup.UserShortId;
             }
         }
 

@@ -3,14 +3,15 @@
     <div class="receipts-header">
       <h1>Receipts</h1>
       <div class="button-group">
-        <button @click="prevReceipt" :disabled="currentReceiptIndex === 0">Previous</button>
-        <button class="danger" @click="deleteReceipt">Delete</button>
+        <button @click="prevReceipt" :disabled="currentReceiptIndex === 0 || receipts.length === 0">Previous</button>
+        <button class="danger" :disabled="receipts.length === 0" @click="deleteReceipt">Delete</button>
         <button @click="nextReceipt" :disabled="currentReceiptIndex === receipts.length - 1 || receipts.length === 0">Next</button>
       </div>
     </div>
     <div v-if="receipts.length === 0">No receipts found.</div>
     <div v-else>
       <ReceiptComponent
+        v-if="receipts[currentReceiptIndex]"
         v-model:receipt="receipts[currentReceiptIndex]"
       />
     </div>
@@ -63,7 +64,9 @@ function onPhotoCaptured(dataUrl: string) {
 function deleteReceipt() {
   if (receipts.value.length === 0) return
   receipts.value.splice(currentReceiptIndex.value, 1)
-  if (currentReceiptIndex.value >= receipts.value.length) {
+  if (receipts.value.length === 0) {
+    currentReceiptIndex.value = 0
+  } else if (currentReceiptIndex.value >= receipts.value.length) {
     currentReceiptIndex.value = receipts.value.length - 1
   }
 }

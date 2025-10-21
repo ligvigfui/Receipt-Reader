@@ -1,9 +1,10 @@
 ﻿namespace RR.Common.Models;
 
-public class Receipt
+public class Receipt : IOwnable
 {
     public int? Id { get; set; }
     public int? GroupId { get; set; }
+    public string? Language { get; set; }
     public Vendor Vendor { get; set; }
     public List<ReceiptItem> Items { get; set; } = [];
     public double Total => Items.Sum(i => i.Price);
