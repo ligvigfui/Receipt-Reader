@@ -9,6 +9,7 @@ public static class AppSettingsConfiguration
             .AddJsonFile("appsettings.json")
             .AddJsonFile($"appsettings.{environment}.json", optional: true)
             .AddJsonFile("appsettings.secrets.json", optional: true)
+            .AddJsonFile($"appsettings.secrets.{environment}.json", optional: true)
             .AddEnvironmentVariables();
 
         void Configure<T>(string section) where T : class =>
@@ -19,6 +20,7 @@ public static class AppSettingsConfiguration
         Configure<JWTSettings>("JWT");
         Configure<SwaggerSettings>("Swagger");
         Configure<ConnectionStringsSettings>("ConnectionStrings");
+        Configure<AdminUserSettings>("AdminUser");
 
         return builder;
     }

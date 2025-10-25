@@ -13,15 +13,10 @@ public class VendorDBO : AbstractPublicOwnable
     public int? AddressId { get; set; }
     public virtual AddressDBO? Address { get; set; }
 
-    public static implicit operator VendorDBO(Vendor vendor) => new()
+    public static implicit operator Vendor?(VendorDBO? vendorDBO) => vendorDBO is null ? null : new()
     {
-        HQ = vendor.VendorHQ,
-        Name = vendor.Name,
-        Address = vendor.Address,
-    };
-
-    public static implicit operator Vendor(VendorDBO vendorDBO) => new()
-    {
+        Id = vendorDBO.Id,
+        GroupId = vendorDBO.GroupId,
         VendorHQ = vendorDBO.HQ,
         Name = vendorDBO.Name,
         Address = vendorDBO.Address,

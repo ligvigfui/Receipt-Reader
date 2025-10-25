@@ -8,15 +8,18 @@ public class VendorRepository(ApplicationDbContext context) : IVendorRepository
             .Take(maxResults)
             .ToListAsync();
 
-    public async Task<VendorDBO?> GetVendorByIdAsync(int vendorId) =>
-        await context.Vendors.FirstOrDefaultAsync(vendor => vendor.Id == vendorId);
-    public async Task<VendorDBO?> GetVendorAsync(string? name, Address? address) =>
-        await context.Vendors.FirstOrDefaultAsync(vendor =>  vendor.Name == name);
+    public async Task<VendorDBO?> GetVendorAsync(Vendor vendor, int userShortId) =>
+        await context.Vendors.WhereCanRead(userShortId).FirstOrDefaultAsync(v => v.Id == vendor.Id && v.Name == vendor.Name);
 
-    public async Task<int> CreateVendorAsync(VendorDBO vendor)
+    public async Task<VendorDBO> CreateVendorAsync(VendorDBO vendorDBO)
     {
-        await context.Vendors.AddAsync(vendor);
+        await context.Vendors.AddAsync(vendorDBO);
         await context.SaveChangesAsync();
-        return vendor.Id;
+        return vendorDBO;
     }
+
+    public async Task<VendorDBO> CreateOrGetVendorAsync(VendorDBO vendorDBO, int userShortId) =>
+        await GetVendorAsync(vendorDBO, userShortId) ??
+            await CreateVendorAsync(vendorDBO);
+
 }

@@ -10,4 +10,5 @@ public class Product : IOwnable
     public float? Quantity { get; set; }
     public Measurement? Measurement { get; set; }
     public string? ImageUrl { get; set; }
+    public string ToIdAndNameString() => $"{{ Id: {Id}, Name: {Name} }}";
 }

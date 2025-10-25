@@ -1,7 +1,10 @@
-﻿namespace RR.Data.Interfaces;
+﻿
+
+namespace RR.Data.Interfaces;
 
 public interface IAddressRepository
 {
-    Task<Address> CreateAddressAsync(AddressDBO address);
-    Task<Address?> GetAddressByIdAsync(int addressId);
+    Task<AddressDBO> CreateAddressAsync(AddressDBO address);
+    Task<AddressDBO?> GetAddressAsync(Address address, int userShortId);
+    Task<AddressDBO> GetOrCreateAddressAsync(AddressDBO addressDBO);
 }

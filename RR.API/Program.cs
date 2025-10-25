@@ -56,8 +56,7 @@ using var serviceScope = (app as IApplicationBuilder).ApplicationServices.GetReq
 using var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
 await context!.Database.MigrateAsync();
 
-if (!context.Users.Any())
-    await app.SeedEssentialData(context);
+await app.SeedEssentialData(context);
 
 var cultureInfo = CultureInfo.InvariantCulture;
 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;

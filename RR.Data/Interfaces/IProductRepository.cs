@@ -2,6 +2,8 @@
 
 public interface IProductRepository
 {
-    Task<ProductDBO> GetOrCreateProductWithAliasAsync(ReceiptItem receiptItem, string? receiptLanguage, UserDBO user, UserGroupDBO? groupId);
+    Task<ProductDBO> CreateProductAsync(Product product);
+    Task<ProductDBO?> GetExactProductWithAliasAsync(string itemName, string language, int userShortId);
+    Task<ProductDBO?> GetProductAsync(Product? product, int userShortId);
     Task<List<ProductDBO>> GetProductsAsync(SortPageFilter<Product> sortPageFilter, int userShortId);
 }

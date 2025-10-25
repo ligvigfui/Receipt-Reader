@@ -11,4 +11,5 @@ public class UserDBO : IdentityUser
     public virtual List<GroupDBO> Groups { get; set; }
     public virtual List<UserRoleDBO> UserRoles { get; set; }
     internal virtual List<UserGroupDBO> UserGroups { get; set; }
+    public string GetLanguage(string? language) => language ?? DefaultLanguage ?? throw new BadRequestException("Language must be specified either in receipt or user profile.");
 }

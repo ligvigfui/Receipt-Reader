@@ -15,6 +15,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<ProductAliasDBO> ProductAliases { get; set; }
     public DbSet<ProductCategoryDBO> ProductCategories { get; set; }
     public DbSet<CategoryDBO> Categories { get; set; }
+    public DbSet<MeasurementDBO> Measurments { get; set; }
 
     [DbFunction("Levenshtein", "dbo")]
     public static int Levenshtein(string s1, string s2) => throw new NotImplementedException();
@@ -115,10 +116,21 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
             }
         }
-        modelBuilder.Entity<ReceiptItemDBO>()
-            .HasOne(ri => ri.Product)
-            .WithMany(p => p.ReceiptItems)
-            .HasForeignKey(ri => ri.ProductId);
+        modelBuilder.Entity<ReceiptItemDBO>(ri =>
+        {
+            ri.HasOne(ri => ri.ProductAlias)
+                .WithMany()
+                .HasForeignKey(ri => ri.ProductAliasId)
+                .OnDelete(DeleteBehavior.SetNull);
+            ri.HasOne(ri => ri.Product)
+                .WithMany()
+                .HasForeignKey(ri => ri.ProductId)
+                .IsRequired();
+            ri.HasOne(ri => ri.Measurement)
+                .WithMany()
+                .HasForeignKey(ri => ri.MeasurementId)
+                .IsRequired();
+        });
 
         modelBuilder.Entity<ProductDBO>(p =>
         {

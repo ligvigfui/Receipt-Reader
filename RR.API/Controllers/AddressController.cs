@@ -10,7 +10,7 @@ public class AddressController(
     [HttpGet]
     [AuthorizeRoles(Role.User)]
     public async Task<IActionResult> Get([FromQuery][Required] int id) =>
-        Ok(await addressRepository.GetAddressByIdAsync(id));
+        Ok(await addressRepository.GetAddressAsync(id));
 
     [HttpPost]
     [Route(nameof(Create))]

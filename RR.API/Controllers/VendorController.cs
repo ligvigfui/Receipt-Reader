@@ -9,5 +9,5 @@ public class VendorController(
 {
     [HttpGet]
     public async Task<IActionResult> GetAsync([FromQuery][Required] int id) =>
-        Ok(await vendorRepository.GetVendorByIdAsync(id));
+        Ok(await vendorRepository.GetVendorByIdAsync(vendor, userDBO.ShortId));
 }

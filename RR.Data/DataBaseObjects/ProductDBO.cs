@@ -9,7 +9,8 @@ public class ProductDBO : AbstractPublicOwnable
     public required string Name { get; set; }
     public string? Description { get; set; }
     public float? Quantity { get; set; }
-    public Measurement? Measurement { get; set; }
+    public int? MeasurementId { get; set; }
+    public MeasurementDBO? Measurement { get; set; }
     public string? ImageUrl { get; set; }
     public virtual ICollection<ProductAliasDBO> Aliases { get; set; }
     public virtual ICollection<ReceiptItemDBO> ReceiptItems { get; set; }
@@ -26,4 +27,5 @@ public class ProductDBO : AbstractPublicOwnable
         Measurement = productDBO.Measurement,
         ImageUrl = productDBO.ImageUrl,
     };
+    public string ToIdAndNameString() => $"{{ Id: {Id}, Name: {Name} }}";
 }

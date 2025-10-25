@@ -2,12 +2,11 @@
 global using Microsoft.AspNetCore.Identity;
 global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore;
-global using Microsoft.Extensions.Options;
 global using RR.Common.IntermediateModels;
 global using RR.Common.Models;
 global using RR.Common.Models.Enums;
+global using RR.Common.Models.Measurements;
 global using RR.Data.DataBaseObjects;
 global using RR.Data.Interfaces;
-global using RR.Settings;
 global using System.ComponentModel.DataAnnotations;
 global using System.ComponentModel.DataAnnotations.Schema;
