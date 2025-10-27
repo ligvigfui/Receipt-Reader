@@ -10,7 +10,7 @@ public class ProductDBO : AbstractPublicOwnable
     public string? Description { get; set; }
     public float? Quantity { get; set; }
     public int? MeasurementId { get; set; }
-    public MeasurementDBO? Measurement { get; set; }
+    public virtual MeasurementDBO? Measurement { get; set; }
     public string? ImageUrl { get; set; }
     public virtual ICollection<ProductAliasDBO> Aliases { get; set; }
     public virtual ICollection<ReceiptItemDBO> ReceiptItems { get; set; }

@@ -1,9 +1,9 @@
 ﻿namespace RR.Data.DataBaseObjects;
 
 [Tables(nameof(ProductAliasDBO))]
-[PrimaryKey(nameof(Language), nameof(Name))]
 public class ProductAliasDBO : AbstractPublicOwnable
 {
+    [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     public required string Name { get; set; }

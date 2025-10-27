@@ -7,15 +7,22 @@ public class ImageService(
     BlobServiceClient blobServiceClient,
     IOptions<AzureBlobStorageSettings> azureBlobStorageSettings,
     IImageRepository imageRepository,
+    IGroupRepository groupRepository,
     ISecurityService securityService
 ) : IImageService
 {
+    AzureBlobStorageSettings StorageSettings => azureBlobStorageSettings.Value;
     public async Task<ImageDBO> CreateImageAsync(
         IFormFile image,
         bool isPublic,
         int? groupId)
     {
-        string containerName = isPublic ? azureBlobStorageSettings.Value.PublicContainerName : azureBlobStorageSettings.Value.PrivateContainerName;
+        var user = await securityService.GetUserAsync();
+        if (groupId is not null)
+        {
+            await groupRepository.EnsureCanEditOwn(groupId, user.ShortId);
+        }
+        string containerName = isPublic ? StorageSettings.PublicContainerName : StorageSettings.PrivateContainerName;
         var accessType = isPublic ? PublicAccessType.Blob : PublicAccessType.None;
 
         // Get reference to the container
@@ -34,45 +41,35 @@ public class ImageService(
             ContentType = image.ContentType
         });
 
-        // Create ImageBlobDBO to store blob URL and metadata
         var imageDBO = new ImageDBO
         {
+            UserShortId = user.ShortId,
+            GroupId = groupId,
+            IsPublic = isPublic,
             FileName = image.FileName,
             BlobGuid = blobGuid,
             ContentType = image.ContentType,
-            IsPublic = isPublic,
-            GroupId = groupId
-            // Add other metadata as needed
         };
         return await imageRepository.CreateImageAsync(imageDBO);
     }
 
-    public async Task<Uri> GetImageURI(string fileName, int? groupId)
+    public async Task<Uri> GetImageURI(string fileName)
     {
-        var userId = (await securityService.GetUserAsync()).ShortId;
-        if (groupId is not null)
-        {
-            var userGroup = await securityService.GetUserGroup(groupId.Value);
-            if (userGroup.UserShortId != userId)
-            {
-                if (!userGroup.CanRead)
-                    throw new UnauthorizedAccessException("Please request read access from a group administrator");
-                userId = userGroup.UserShortId;
-            }
-        }
+        var userShortId = (await securityService.GetUserAsync()).ShortId;
 
-        var blobGuid = await imageRepository.GetImageBlobUrlAsync(fileName, userId, groupId) ??
-            throw new NotFoundException("The requested image does not exist. Did you search in the correct group?");
+        var image = await imageRepository.GetImageBlobUrlAsync(fileName, userShortId) ??
+            throw new NotFoundException("The requested image does not exist.");
+        if (image.IsPublic)
+            return new Uri($"{StorageSettings.BlobServiceEndpoint}/{StorageSettings.PublicContainerName}/{image.BlobGuid}");
 
         // Get reference to the private container
-        var containerClient = blobServiceClient.GetBlobContainerClient(azureBlobStorageSettings.Value.PrivateContainerName);
-        var blobClient = containerClient.GetBlobClient(blobGuid);
+        var containerClient = blobServiceClient.GetBlobContainerClient(StorageSettings.PrivateContainerName);
+        var blobClient = containerClient.GetBlobClient(image.BlobGuid);
 
         // Check if the blob exists
         if (!await blobClient.ExistsAsync())
             throw new NotFoundException("The requested image does not exist.");
         
-        // Download the blob content as a stream
         return blobClient.GenerateSasUri(Azure.Storage.Sas.BlobSasPermissions.Read, DateTimeOffset.UtcNow.AddMinutes(5));
     }
 }

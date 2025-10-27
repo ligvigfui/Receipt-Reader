@@ -16,7 +16,7 @@ public class ProductRepositoryTests
         var context = new ApplicationDbContext(options);
         context.Products.AddRange(products);
         context.SaveChanges();
-        return new ProductRepository(context);
+        return new ProductRepository(null, context);
     }
 
     [Test]

@@ -1,20 +1,19 @@
 using Azure;
 using Azure.AI.FormRecognizer.DocumentAnalysis;
-using System.Threading.Tasks;
 
 namespace RR.Service.Services;
 
 public class DocumentIntelligenceService(
     IOptions<AzureDocumentIntelligenceAPISettings> options,
     ISecurityService securityService
-    ) : IDocumentIntelligenceService
+) : IDocumentIntelligenceService
 {
-    readonly AzureDocumentIntelligenceAPISettings Settings = options.Value;
+    readonly AzureDocumentIntelligenceAPISettings AzureSettings = options.Value;
 
     public async Task<string> ExtractReceiptDataFromImageAsync(byte[] imageBytes)
     {
-        var credential = new AzureKeyCredential(Settings.ApiKey);
-        var client = new DocumentAnalysisClient(new Uri(Settings.Endpoint), credential);
+        var credential = new AzureKeyCredential(AzureSettings.ApiKey);
+        var client = new DocumentAnalysisClient(new Uri(AzureSettings.Endpoint), credential);
         using var stream = new MemoryStream(imageBytes);
         AnalyzeDocumentOperation operation = await client.AnalyzeDocumentAsync(WaitUntil.Completed, "prebuilt-receipt", stream);
         var receipts = operation.Value;

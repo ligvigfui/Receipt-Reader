@@ -31,6 +31,7 @@ public static class DependencyIncejtionConfiguration
             var settings = x.GetRequiredService<IOptions<AzureBlobStorageSettings>>().Value;
             return new BlobServiceClient(settings.ConnectionString);
         });
+        services.AddMemoryCache();
         return builder;
     }
 }

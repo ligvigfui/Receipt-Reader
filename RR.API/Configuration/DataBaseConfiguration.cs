@@ -4,7 +4,8 @@ public static class DataBaseConfiguration
 {
     public static IHostApplicationBuilder ConfigureDatabase(this IHostApplicationBuilder builder)
     {
-        var connectionString = builder.Configuration.Get<ConnectionStringsSettings>()!.ReceiptReaderDatabase;
+        var connectionString = builder.Configuration.GetSection("ConnectionStrings").Get<ConnectionStringsSettings>()?.ReceiptReaderDatabase
+            ?? builder.Configuration.GetConnectionString("ReceiptReaderDatabase");
         builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
             options.UseLazyLoadingProxies()
                 .UseSqlServer(connectionString, options =>

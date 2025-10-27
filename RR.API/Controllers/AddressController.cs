@@ -7,16 +7,16 @@ public class AddressController(
     IAddressRepository addressRepository
 ) : ControllerBase
 {
-    [HttpGet]
-    [AuthorizeRoles(Role.User)]
-    public async Task<IActionResult> Get([FromQuery][Required] int id) =>
-        Ok(await addressRepository.GetAddressAsync(id));
+    //[HttpGet]
+    //[AuthorizeRoles(Role.User)]
+    //public async Task<IActionResult> Get([FromQuery][Required] int id) =>
+    //    Ok(await addressRepository.GetAddressAsync(id));
 
-    [HttpPost]
-    [Route(nameof(Create))]
-    [AuthorizeRoles(Role.User)]
-    public async Task<IActionResult> Create([FromBody] Address address) =>
-        CreatedAtAction(nameof(Create), await addressRepository.CreateAddressAsync(address));
+    //[HttpPost]
+    //[Route(nameof(Create))]
+    //[AuthorizeRoles(Role.User)]
+    //public async Task<IActionResult> Create([FromBody] Address address) =>
+    //    CreatedAtAction(nameof(Create), await addressRepository.CreateAddressAsync(address));
 
 
 }

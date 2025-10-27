@@ -7,7 +7,7 @@ public class VendorController(
     IVendorRepository vendorRepository
 ) : ControllerBase
 {
-    [HttpGet]
-    public async Task<IActionResult> GetAsync([FromQuery][Required] int id) =>
-        Ok(await vendorRepository.GetVendorByIdAsync(vendor, userDBO.ShortId));
+    //[HttpGet]
+    //public async Task<IActionResult> GetAsync([FromQuery][Required] int id) =>
+    //    Ok(await vendorRepository.GetVendorAsync().GetVendorByIdAsync(vendor, userDBO.ShortId));
 }

@@ -3,48 +3,12 @@
 public class SecurityService(
     IOptions<JWTSettings> jWTConfiguration,
     IHttpContextAccessor httpContextAccessor,
-    IUserRepository userRepository,
-    IGroupRepository groupRepository
+    IUserRepository userRepository
 ) : ISecurityService
 {
     private readonly JWTSettings JWTSettings = jWTConfiguration.Value;
     private readonly SigningCredentials signingCredentials = new(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jWTConfiguration.Value.Key)), SecurityAlgorithms.HmacSha256);
-
-    public async Task<UserGroupDBO?> EnsureCanRead(IOwnable ownable)
-    {
-        var userGroup = await GetUserGroup(ownable.GroupId);
-        if (!userGroup?.CanRead ?? true)
-            throw new UnauthorizedAccessException("You do not have permission to access others resources in this group.");
-        return userGroup;
-    }
-    public async Task<UserGroupDBO?> EnsureCanReadOwn(IOwnable ownable)
-    {
-        var userGroup = await GetUserGroup(ownable.GroupId);
-        if (!userGroup?.CanReadOwn ?? true)
-            throw new UnauthorizedAccessException("You do not have permission to access your own resources in this group.");
-        return userGroup;
-    }
-    public async Task<UserGroupDBO?> EnsureCanEdit(IOwnable ownable)
-    {
-        var userGroup = await GetUserGroup(ownable.GroupId);
-        if (!userGroup?.CanEdit ?? true)
-            throw new UnauthorizedAccessException("You do not have permissions to edit others resources in this group.");
-        return userGroup;
-    }
-    public async Task<UserGroupDBO?> EnsureCanEditOwn(IOwnable ownable)
-    {
-        var userGroup = await GetUserGroup(ownable.GroupId);
-        if (!userGroup?.CanEditOwn ?? true)
-            throw new UnauthorizedAccessException("You do not have permissions to add or edit your resources in this group.");
-        return userGroup;
-    }
-
-    public async Task<UserGroupDBO?> GetUserGroup(int? groupId)
-    {
-        var userEmail = httpContextAccessor.HttpContext!.GetUserEmail();
-        return await groupRepository.GetUserGroup(userEmail, groupId);
-    }
-
+    
     public async Task<string> RegisterAsync(Login login)
     {
         var newUser = await userRepository.RegisterAsync(login);

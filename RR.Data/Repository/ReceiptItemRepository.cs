@@ -6,6 +6,12 @@ public class ReceiptItemRepository(
     IProductRepository productRepository
 ) : IReceiptItemRepository
 {
+    public async Task<IEnumerable<ReceiptItemDBO>> CreateReceiptItemAsync(IEnumerable<ReceiptItem> receiptItems, string language, int userShortId, int? groupId)
+    {
+        if (receiptItems.Any(ri => ri.Product is null && ri.Name is null))
+            throw new BadRequestException("Either Product or Name must be specified for all ReceiptItems.");
+        var products = await productRepository.GetProductsWithIdsAsync(receiptItems.Select(ri => ri.Product), userShortId);
+    }
     public async Task<ReceiptItemDBO> CreateReceiptItemAsync(ReceiptItem receiptItem, string language, int userShortId, int? groupId)
     {
         if (receiptItem.Product is null && receiptItem.Name is null)
@@ -21,11 +27,11 @@ public class ReceiptItemRepository(
         productAliasDBO ??= receiptItem.Name == null ? null :
             await productAliasRepository.CreateProductAliasAsync(new ProductAliasDBO()
             {
+                UserShortId = userShortId,
+                GroupId = groupId,
                 Name = receiptItem.Name!,
                 Language = language,
                 ProductId = productDBO!.Id,
-                UserShortId = userShortId,
-                GroupId = groupId
             });
 
         var measurement = await measurementRepository.GetMeasurement(receiptItem.Measurement) ??

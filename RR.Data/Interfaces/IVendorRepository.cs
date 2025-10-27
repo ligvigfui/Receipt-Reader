@@ -2,6 +2,7 @@
 
 public interface IVendorRepository
 {
-    Task<int> CreateVendorAsync(VendorDBO vendor);
-    public Task<VendorDBO?> GetVendorAsync(Vendor vendor, int userShortId);
+    Task<VendorDBO> GetOrCreateVendorAsync(VendorDBO vendorDBO);
+    Task<VendorDBO> CreateVendorAsync(VendorDBO vendorDBO);
+    Task<VendorDBO?> GetVendorAsync(Vendor? vendor, int userShortId);
 }

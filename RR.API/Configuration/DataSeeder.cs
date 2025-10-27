@@ -18,7 +18,7 @@ public static class DataSeeder
     static bool AnyUsers(ApplicationDbContext context) => context.Users.Any();
     static async Task SeedUsers(IServiceProvider services, ApplicationDbContext context)
     {
-        if (!AnyUsers(context))
+        if (AnyUsers(context))
             return;
         var roleManager = services.GetRequiredService<RoleManager<RoleDBO>>();
         await roleManager.CreateAsync(new RoleDBO { Name = Role.Admin.ToString() });
@@ -41,7 +41,7 @@ public static class DataSeeder
     static bool AnyMeasurments(ApplicationDbContext context) => context.Measurments.Any();
     static async Task SeedMeasurements(ApplicationDbContext context)
     {
-        if (!AnyMeasurments(context))
+        if (AnyMeasurments(context))
             return;
         await context.Measurments.AddRangeAsync(new List<MeasurementDBO>
         {

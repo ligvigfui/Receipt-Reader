@@ -14,7 +14,7 @@ public class ReceiptItemDBO
     public virtual ProductDBO Product { get; set; }
     public float Quantity { get; set; }
     public int MeasurementId { get; set; }
-    public MeasurementDBO Measurement { get; set; }
+    public virtual MeasurementDBO Measurement { get; set; }
     public float PricePerQuantity { get; set; }
     public float Price => Quantity * PricePerQuantity;
 

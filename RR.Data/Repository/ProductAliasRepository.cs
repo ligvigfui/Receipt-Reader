@@ -1,6 +1,6 @@
 ﻿namespace RR.Data.Repository;
 
-internal class ProductAliasRepository(
+public class ProductAliasRepository(
     ApplicationDbContext context
 ) : IProductAliasRepository
 {
