@@ -35,8 +35,12 @@ public class ProductRepository(
         return product;
     }
 
-    public async Task<IEnumerable<ProductDBO>> GetProductsWithIdsAsync(IEnumerable<Product?> products, int userShortId) =>
-        await context.Products.WhereCanRead(userShortId).async
+    public async Task<List<ProductDBO>> GetProductsWithIdsAsync(IEnumerable<Product?> products, int userShortId, int? groupId)
+    {
+        var productIds = products.Where(p => p is not null).Select(p => p!.Id).Where(id => id is not null).Distinct().ToList();
+        return await context.Products.WhereGroupCanRead(userShortId, groupId).Where(p => productIds.Contains(p.Id)).ToListAsync();
+    }
+
     public async Task<ProductDBO?> GetProductAsync(Product? product, int userShortId) => product is null ? null :
         await context.Products.WhereCanRead(userShortId).FirstOrDefaultAsync(p => p.Name == product.Name && product.Id == p.Id);
 

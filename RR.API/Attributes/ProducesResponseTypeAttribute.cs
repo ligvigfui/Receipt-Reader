@@ -1,4 +1,4 @@
-﻿namespace RR.API;
+﻿namespace RR.API.Attributes;
 
 public class ProducesResponseAttribute<T>(HttpStatusCode statusCode = HttpStatusCode.OK) : ProducesResponseTypeAttribute(typeof(T), (int)statusCode)
 {

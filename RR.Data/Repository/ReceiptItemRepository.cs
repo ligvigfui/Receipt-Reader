@@ -6,11 +6,12 @@ public class ReceiptItemRepository(
     IProductRepository productRepository
 ) : IReceiptItemRepository
 {
-    public async Task<IEnumerable<ReceiptItemDBO>> CreateReceiptItemAsync(IEnumerable<ReceiptItem> receiptItems, string language, int userShortId, int? groupId)
+    public async Task<IEnumerable<ReceiptItemDBO>> PreProcessReceiptItemsAsync(IEnumerable<ReceiptItem> receiptItems, string language, int userShortId, int? groupId)
     {
         if (receiptItems.Any(ri => ri.Product is null && ri.Name is null))
             throw new BadRequestException("Either Product or Name must be specified for all ReceiptItems.");
-        var products = await productRepository.GetProductsWithIdsAsync(receiptItems.Select(ri => ri.Product), userShortId);
+        var products = await productRepository.GetProductsWithIdsAsync(receiptItems.Select(ri => ri.Product), userShortId, groupId);
+        var productAliases = await productAliasRepository.GetProductAliasesWithNamesAsync(receiptItems.Where(ri => ri.Name is not null).Select(ri => ri.Name!).Distinct(), language, userShortId, groupId);
     }
     public async Task<ReceiptItemDBO> CreateReceiptItemAsync(ReceiptItem receiptItem, string language, int userShortId, int? groupId)
     {

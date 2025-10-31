@@ -1,4 +1,4 @@
-﻿namespace RR.API;
+﻿namespace RR.API.Attributes;
 
 [DoNotAutoRegister]
 public class AuthorizeRolesAttribute : AuthorizeAttribute

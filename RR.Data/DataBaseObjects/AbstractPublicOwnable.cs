@@ -10,16 +10,23 @@ public abstract class AbstractPublicOwnable
 }
 public static class AbstractPublicOwnableExtensions
 {
+    public static IQueryable<T> WhereGroupCanRead<T>(this IQueryable<T> dbSet, int userShortId, int? groupId)
+        where T : AbstractPublicOwnable => dbSet
+            .Where(x => x.IsPublic
+                || (x.GroupId == null && x.UserShortId == userShortId)
+                || (x.GroupId != null && x.GroupId == groupId &&
+                    x.Group!.UserGroups.Any(ug => ug.UserShortId == userShortId &&
+                    ((x.UserShortId == userShortId && ug.CanReadOwn) || (x.UserShortId != userShortId && ug.CanRead)))));
     public static IQueryable<T> WhereCanRead<T>(this IQueryable<T> dbSet, int userShortId)
         where T : AbstractPublicOwnable => dbSet
             .Where(x => x.IsPublic
                 || (x.GroupId == null && x.UserShortId == userShortId)
-                || (x.Group.UserGroups.Any(ug => ug.UserShortId == userShortId &&
-                    ((x.UserShortId == userShortId && ug.CanReadOwn) || (x.UserShortId != userShortId && ug.CanRead)))));
+                || x.GroupId != null && x.Group!.UserGroups.Any(ug => ug.UserShortId == userShortId &&
+                    ((x.UserShortId == userShortId && ug.CanReadOwn) || (x.UserShortId != userShortId && ug.CanRead))));
     public static IQueryable<T> WhereCanEdit<T>(this IQueryable<T> dbSet, int userShortId)
         where T : AbstractPublicOwnable => dbSet
             .Where(x => (x.GroupId == null && x.UserShortId == userShortId)
-                || (x.Group.UserGroups.Any(ug => ug.UserShortId == userShortId &&
-                    ((x.UserShortId == userShortId && ug.CanEditOwn) || (x.UserShortId != userShortId && ug.CanEdit)))));
+                || x.GroupId != null && x.Group!.UserGroups.Any(ug => ug.UserShortId == userShortId &&
+                    ((x.UserShortId == userShortId && ug.CanEditOwn) || (x.UserShortId != userShortId && ug.CanEdit))));
 
 }
