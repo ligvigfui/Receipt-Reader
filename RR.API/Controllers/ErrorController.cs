@@ -15,6 +15,8 @@ public class ErrorsController(ILogger<ErrorsController> logger) : ControllerBase
         var code = exception switch
         {
             ExceptionBase httpException => httpException.StatusCode,
+            UnauthorizedAccessException => HttpStatusCode.Unauthorized,
+            InvalidOperationException => HttpStatusCode.BadRequest,
             _ => HttpStatusCode.InternalServerError
         };
 

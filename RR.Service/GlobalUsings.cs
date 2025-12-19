@@ -2,10 +2,9 @@
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.Extensions.Options;
 global using Microsoft.IdentityModel.Tokens;
-global using RR.Common.Interfaces;
 global using RR.Common.IntermediateModels;
 global using RR.Common.Models;
-global using RR.Data;
+global using RR.Common.Models.Category;
 global using RR.Data.DataBaseObjects;
 global using RR.Data.Interfaces;
 global using RR.Service.Extensions;

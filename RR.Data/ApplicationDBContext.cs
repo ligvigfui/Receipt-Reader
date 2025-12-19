@@ -16,6 +16,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<ProductCategoryDBO> ProductCategories { get; set; }
     public DbSet<CategoryDBO> Categories { get; set; }
     public DbSet<MeasurementDBO> Measurments { get; set; }
+    public DbSet<LanguageDBO> Languages { get; set; }
 
     [DbFunction("Levenshtein", "dbo")]
     public static int Levenshtein(string s1, string s2) => throw new NotImplementedException();

@@ -2,9 +2,9 @@
 
 public interface IGroupRepository
 {
-    Task<UserGroupDBO?> EnsureCanEdit(int? groupId, int? userShortId);
-    Task<UserGroupDBO?> EnsureCanEditOwn(int? groupId, int? userShortId);
-    Task<UserGroupDBO?> EnsureCanRead(int? groupId, int? userShortId);
-    Task<UserGroupDBO?> EnsureCanReadOwn(int? groupId, int? userShortId);
-    Task<UserGroupDBO?> GetUserGroup(int? groupId, int? userShortId);
+    Task<UserGroupDBO?> EnsureCanEdit(int userShortId, int? groupId);
+    Task<UserGroupDBO?> EnsureCanEditOwn(int userShortId, int? groupId);
+    Task<UserGroupDBO?> EnsureCanRead(int userShortId, int? groupId);
+    Task<UserGroupDBO?> EnsureCanReadOwn(int userShortId, int? groupId);
+    Task<UserGroupDBO?> GetUserGroup(int userShortId, int? groupId);
 }

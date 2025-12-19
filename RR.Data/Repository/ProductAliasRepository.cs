@@ -4,14 +4,15 @@ public class ProductAliasRepository(
     ApplicationDbContext context
 ) : IProductAliasRepository
 {
-    public async Task<List<ProductAliasDBO>> GetProductAliasesWithNamesAsync(IEnumerable<string> productNames, string language, int userShortId, int? groupId) =>
+    public async Task<List<ProductAliasDBO>> GetProductAliasesWithNamesAsync(IEnumerable<string> productNames, ushort languageId, int userShortId, int? groupId) =>
         await context.ProductAliases
             .WhereGroupCanRead(userShortId, groupId)
-            .Where(pa => productNames.Contains(pa.Name) && pa.Language == language)
+            .Where(pa => productNames.Contains(pa.Name) && pa.LanguageId == languageId)
+            .Include(pa => pa.Product)
             .ToListAsync();
 
-    public async Task<ProductAliasDBO?> GetProductAliasAsync(string? productName, string language, int userShortId) => productName is null ? null :
-        await context.ProductAliases.WhereCanRead(userShortId).FirstOrDefaultAsync(pa => pa.Name == productName && pa.Language == language);
+    public async Task<ProductAliasDBO?> GetProductAliasAsync(string? productName, ushort languageId, int userShortId) => productName is null ? null :
+        await context.ProductAliases.WhereCanRead(userShortId).FirstOrDefaultAsync(pa => pa.Name == productName && pa.LanguageId == languageId);
 
     public async Task<ProductAliasDBO> CreateProductAliasAsync(ProductAliasDBO productAliasDBO)
     {

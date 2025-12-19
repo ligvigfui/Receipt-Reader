@@ -10,7 +10,7 @@ public class VendorHQRepository(
         await context.VendorHQs.WhereCanRead(userShortId).Include(vh => vh.Address).FirstOrDefaultAsync(vh => vh.Id == vendorHQ.Id && vh.Name == vendorHQ.Name);
     public async Task<VendorHQDBO> CreateVendorHQAsync(VendorHQDBO vendorHQDBO)
     {
-        await groupRepository.EnsureCanEditOwn(vendorHQDBO.GroupId, vendorHQDBO.UserShortId);
+        await groupRepository.EnsureCanEditOwn(vendorHQDBO.UserShortId.Value, vendorHQDBO.GroupId);
         var address = await addressRepository.GetAddressAsync(vendorHQDBO.Address, vendorHQDBO.UserShortId.Value);
         if (address is not null)
             vendorHQDBO.Address = address;

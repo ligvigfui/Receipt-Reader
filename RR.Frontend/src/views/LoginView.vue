@@ -13,7 +13,9 @@
 import { reactive } from 'vue'
 import { ApiClient } from '@/utils/ApiClient'
 import { setToken } from '@/store/authStore'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const state = reactive({
   loginCredentials: {
     email: '',
@@ -30,6 +32,7 @@ async function OnSubmit() {
   )
   if (result.isOk()) {
     setToken(result.token)
+    router.push('/receipts')
   } else {
     let errors: string[] = result.errors ?? [];
     state.errorMessage = errors.length > 0 ? errors.join('\n') : 'Login failed.';

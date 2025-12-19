@@ -12,16 +12,24 @@ public class ImageService(
 ) : IImageService
 {
     AzureBlobStorageSettings StorageSettings => azureBlobStorageSettings.Value;
-    public async Task<ImageDBO> CreateImageAsync(
+    public async Task<Image> CreateImageAsync(
         IFormFile image,
         bool isPublic,
-        int? groupId)
+        int? groupId) => await CreateImageDBOAsync(image, isPublic, groupId);
+
+    public async Task<ImageDBO> CreateImageDBOAsync(
+    IFormFile image,
+    bool isPublic,
+    int? groupId)
     {
-        var user = await securityService.GetUserAsync();
+            var user = await securityService.GetUserAsync();
+        var imageExists = await GetImageAsync(image.FileName, null, user.ShortId);
+        if (imageExists is not null)
+            throw new InvalidOperationException("An image with the same filename already exists for this user.");
+        
         if (groupId is not null)
-        {
-            await groupRepository.EnsureCanEditOwn(groupId, user.ShortId);
-        }
+            await groupRepository.EnsureCanEditOwn(user.ShortId, groupId);
+        
         string containerName = isPublic ? StorageSettings.PublicContainerName : StorageSettings.PrivateContainerName;
         var accessType = isPublic ? PublicAccessType.Blob : PublicAccessType.None;
 
@@ -35,6 +43,7 @@ public class ImageService(
 
         using var memoryStream = new MemoryStream();
         await image.CopyToAsync(memoryStream);
+        memoryStream.Position = 0;
         // Upload the image stream
         await blobClient.UploadAsync(memoryStream, new BlobHttpHeaders
         {
@@ -52,21 +61,35 @@ public class ImageService(
         };
         return await imageRepository.CreateImageAsync(imageDBO);
     }
-
-    public async Task<Uri> GetImageURI(string fileName)
+    public async Task<Uri> CreateImageAndGetURIAsync(
+        IFormFile image,
+        bool isPublic,
+        int? groupId)
     {
-        var userShortId = (await securityService.GetUserAsync()).ShortId;
+        var imageDBO = await CreateImageDBOAsync(image, isPublic, groupId);
+        return await GetImageURI(imageDBO);
+    }
+    async Task<ImageDBO?> GetImageAsync(string fileName, int? imageId, int? userShortId = null)
+    {
+        userShortId ??= (await securityService.GetUserAsync()).ShortId;
+        return await imageRepository.GetImageAsync(fileName, imageId, userShortId.Value);
+    }
 
-        var image = await imageRepository.GetImageBlobUrlAsync(fileName, userShortId) ??
+    public async Task<Uri> GetImageURI(string fileName, int? fileId, int? userShortId = null)
+    {
+        var imageDBO = await GetImageAsync(fileName, fileId, userShortId) ??
             throw new NotFoundException("The requested image does not exist.");
-        if (image.IsPublic)
-            return new Uri($"{StorageSettings.BlobServiceEndpoint}/{StorageSettings.PublicContainerName}/{image.BlobGuid}");
+        
+        return await GetImageURI(imageDBO);
+    }
+    public async Task<Uri> GetImageURI(ImageDBO imageDBO)
+    {
+        if (imageDBO.IsPublic)
+            return new Uri($"{StorageSettings.BlobServiceEndpoint}/{StorageSettings.PublicContainerName}/{imageDBO.BlobGuid}");
 
-        // Get reference to the private container
         var containerClient = blobServiceClient.GetBlobContainerClient(StorageSettings.PrivateContainerName);
-        var blobClient = containerClient.GetBlobClient(image.BlobGuid);
+        var blobClient = containerClient.GetBlobClient(imageDBO.BlobGuid);
 
-        // Check if the blob exists
         if (!await blobClient.ExistsAsync())
             throw new NotFoundException("The requested image does not exist.");
         

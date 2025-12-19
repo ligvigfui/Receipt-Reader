@@ -21,4 +21,9 @@ public class MeasurementRepository(
 
     public async Task<MeasurementDBO?> GetMeasurement(Measurement? measurement) => measurement is null ? null :
         await context.Measurments.FirstOrDefaultAsync(m => m.Id == measurement.Id && m.Name == measurement.Name);
+
+    public async Task<List<MeasurementDBO>> GetMeasurements(IEnumerable<int> measurementIds) =>
+        await context.Measurments.Where(m => measurementIds.Contains(m.Id)).ToListAsync();
+    public async Task<List<MeasurementDBO>> GetMeasurements(IEnumerable<string> measurementSymbols) =>
+        await context.Measurments.Where(m => measurementSymbols.Contains(m.Symbol.ToLower())).ToListAsync();
 }

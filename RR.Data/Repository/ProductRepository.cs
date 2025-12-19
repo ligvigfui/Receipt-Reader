@@ -21,12 +21,12 @@ public class ProductRepository(
         return productDBO;
     }
 
-    public async Task<ProductDBO?> GetExactProductWithAliasAsync(string itemName, string language, int userShortId)
+    public async Task<ProductDBO?> GetExactProductWithAliasAsync(string itemName, byte languageId, int userShortId)
     {
         var alias = await context.ProductAliases
             .Where(alias =>
                 alias.Name == itemName &&
-                alias.Language == language)
+                alias.LanguageId == languageId)
             .WhereCanRead(userShortId)
             .FirstOrDefaultAsync();
         if (alias != null)
@@ -35,9 +35,9 @@ public class ProductRepository(
         return product;
     }
 
-    public async Task<List<ProductDBO>> GetProductsWithIdsAsync(IEnumerable<Product?> products, int userShortId, int? groupId)
+    public async Task<List<ProductDBO>> GetProductsWithIdsAsync(IEnumerable<Product> products, int userShortId, int? groupId)
     {
-        var productIds = products.Where(p => p is not null).Select(p => p!.Id).Where(id => id is not null).Distinct().ToList();
+        var productIds = products.Where(p => p.Id is not null).Select(p => p.Id).Distinct().ToList();
         return await context.Products.WhereGroupCanRead(userShortId, groupId).Where(p => productIds.Contains(p.Id)).ToListAsync();
     }
 

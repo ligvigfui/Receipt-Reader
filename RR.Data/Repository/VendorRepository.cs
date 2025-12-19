@@ -23,7 +23,7 @@ public class VendorRepository(
 
     public async Task<VendorDBO> CreateVendorAsync(VendorDBO vendorDBO)
     {
-        await groupRepository.EnsureCanEditOwn(vendorDBO.GroupId, vendorDBO.UserShortId);
+        await groupRepository.EnsureCanEditOwn(vendorDBO.UserShortId.Value, vendorDBO.GroupId);
         var address = await addressRepository.GetAddressAsync(vendorDBO.Address, vendorDBO.UserShortId!.Value);
         if (address is not null)
             vendorDBO.Address = address;
@@ -45,4 +45,9 @@ public class VendorRepository(
         await GetVendorAsync(vendorDBO, vendorDBO.UserShortId.Value) ??
             await CreateVendorAsync(vendorDBO);
 
+    public async Task<VendorValidated> ValidateVendor(VendorDBO vendorDBO)
+    {
+        var vendor = (VendorValidated)vendorDBO!;
+        return vendor;
+    }
 }

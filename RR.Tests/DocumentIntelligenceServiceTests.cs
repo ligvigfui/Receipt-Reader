@@ -1,8 +1,3 @@
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using RR.Service.Services;
-using RR.Settings;
-
 namespace RR.Tests;
 
 public class DocumentIntelligenceServiceTests
@@ -12,17 +7,24 @@ public class DocumentIntelligenceServiceTests
     {
         // Arrange
         // get the appsettings.secrets.json file from the RR.API project
-        var configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.secrets.json")
-            .Build();
+        var configuration = Get.Configuration();
         var azureSettings = configuration.GetSection("AzureDocumentIntelligenceAPI").Get<AzureDocumentIntelligenceAPISettings>();
-        var service = new DocumentIntelligenceService(Options.Create(azureSettings), null);
+        var appDBContext = Get.ApplicationDbContext();
+        var measurementRepository = new MeasurementRepository(appDBContext);
+        await measurementRepository.CreateMeasurement(new CreateMeasurement()
+        {
+            Name = "Darab",
+            Plural = "Darab",
+            Symbol = "db",
+            Category = MeasurementCategory.Count,
+            ConversionFactorToSI = 1
+        });
+        var service = new DocumentIntelligenceService(Options.Create(azureSettings), measurementRepository);
         var imagePath = Path.Combine("SampleImages", "IMG_20250729_202516.jpg");
         var imageBytes = await File.ReadAllBytesAsync(imagePath);
 
         // Act
-        var result = await service.ExtractReceiptDataFromImageAsync(imageBytes);
+        var result = await service.ExtractReceiptDataFromImageAsync(imageBytes, null);
 
     }
 }

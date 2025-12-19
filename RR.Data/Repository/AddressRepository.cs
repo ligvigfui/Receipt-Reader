@@ -10,7 +10,7 @@ public class AddressRepository(
 
     public async Task<AddressDBO> CreateAddressAsync(AddressDBO address)
     {
-        await groupRepository.EnsureCanEditOwn(address.GroupId, address.UserShortId);
+        await groupRepository.EnsureCanEditOwn(address.UserShortId.Value, address.GroupId);
         await context.Addresses.AddAsync(address);
         await context.SaveChangesAsync();
         return address;

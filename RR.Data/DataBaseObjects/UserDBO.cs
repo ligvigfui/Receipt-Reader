@@ -1,4 +1,6 @@
-﻿namespace RR.Data.DataBaseObjects;
+﻿using System.Text.Json.Serialization;
+
+namespace RR.Data.DataBaseObjects;
 
 [Tables(nameof(UserDBO))]
 public class UserDBO : IdentityUser
@@ -6,10 +8,9 @@ public class UserDBO : IdentityUser
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int ShortId { get; set; }
     public bool AreItemsDefaultPublic { get; set; } = true;
-    [StringLength(5)]
-    public string? DefaultLanguage { get; set; }
-    public virtual List<GroupDBO> Groups { get; set; }
-    public virtual List<UserRoleDBO> UserRoles { get; set; }
-    internal virtual List<UserGroupDBO> UserGroups { get; set; }
-    public string GetLanguage(string? language) => language ?? DefaultLanguage ?? throw new BadRequestException("Language must be specified either in receipt or user profile.");
+    public byte DefaultLanguageId { get; set; }
+    public virtual IEnumerable<GroupDBO> Groups { get; set; }
+    [JsonIgnore]
+    public virtual IEnumerable<UserRoleDBO> UserRoles { get; set; }
+    internal virtual IEnumerable<UserGroupDBO> UserGroups { get; set; }
 }

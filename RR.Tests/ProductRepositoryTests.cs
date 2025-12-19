@@ -1,19 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RR.Common.Models;
-using RR.Data;
-using RR.Data.DataBaseObjects;
-using RR.Data.Repository;
-
-namespace RR.Tests;
+﻿namespace RR.Tests;
 
 public class ProductRepositoryTests
 {
     ProductRepository GetProductRepository(IEnumerable<ProductDBO> products)
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: "TestDb")
-            .Options;
-        var context = new ApplicationDbContext(options);
+        var context = Get.ApplicationDbContext();
         context.Products.AddRange(products);
         context.SaveChanges();
         return new ProductRepository(null, context);

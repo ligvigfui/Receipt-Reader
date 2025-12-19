@@ -1,7 +1,10 @@
 <template>
   <div class="product-page-view">
     <h1>Products</h1>
-    <TableViewComponent :grid="productGrid" :page-size="1" />
+    <TableViewComponent
+      :grid="productGrid"
+      :page-size="1"
+    />
   </div>
 </template>
 
@@ -31,6 +34,10 @@ const products = ref<Product[]>([
     }),
 ])
 
+async function openRow(row: Product) {
+  alert(`Clicked on product: ${row.name}`)
+}
+
 // Example: fetch from API or local data
 async function getRows() {
   // TODO: Replace with real API call
@@ -51,7 +58,19 @@ function defaultColumns() {
 const productGrid = {
   getRows,
   defaultColumns,
-  rowKey: (row: Product) => row.id || row.name
+  rowKey: (row: Product) => row.id || row.name,
+  getData: async (options: {
+    filters: Record<string, string>,
+    sortKey: string | null,
+    sortOrder: 'asc' | 'desc' | null,
+    page: number,
+    pageSize: number
+  }) => {
+    alert(JSON.stringify(options, null, 2))
+    // For simplicity, ignoring options and returning all products
+    return products.value
+  },
+  onClick: openRow
 }
 </script>
 

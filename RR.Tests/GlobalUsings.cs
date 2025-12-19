@@ -1,0 +1,11 @@
+﻿global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.Options;
+global using RR.Common.Models;
+global using RR.Common.Models.Enums;
+global using RR.Common.Models.Measurements;
+global using RR.Data;
+global using RR.Data.DataBaseObjects;
+global using RR.Data.Repository;
+global using RR.Service.Services;
+global using RR.Settings;

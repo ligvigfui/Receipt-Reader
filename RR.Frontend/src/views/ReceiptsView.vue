@@ -8,7 +8,7 @@
         <button @click="nextReceipt" :disabled="currentReceiptIndex === receipts.length - 1 || receipts.length === 0">Next</button>
       </div>
     </div>
-    <div v-if="receipts.length === 0">No receipts found.</div>
+    <div v-if="receipts.length === 0"><p>No receipts found.</p></div>
     <div v-else>
       <ReceiptComponent
         v-if="receipts[currentReceiptIndex]"
@@ -19,7 +19,7 @@
       <div class="button-group">
         <button @click="openPhotoPopup">New from image</button>
         <button @click="addNewReceipt" :disabled="hasEmptyReceipt">New receipt</button>
-        <button @click="saveReceipts">
+        <button @click="saveReceipt">
           <span class="save-icon">💾</span>
           Save
         </button>
@@ -88,12 +88,17 @@ onMounted(() => {
 function addNewReceipt() {
   receipts.value.push(new Receipt())
 }
-async function saveReceipts() {
+async function saveReceipt() {
   // TODO: Implement save logic (API call, etc.)
   localStorage.setItem(RECEIPTS_STORAGE_KEY, JSON.stringify(receipts.value))
+  const selectedReceipt = receipts.value[currentReceiptIndex.value];
+  if (selectedReceipt.isEmpty()) {
+    alert('Cannot save an empty receipt.')
+    return;
+  }
   const result = await ApiClient.post<AuthResponse>(
-    'account/login',
-    state.loginCre
+    'receipt/create',
+    JSON.stringify(receipts.value[currentReceiptIndex.value])
   )
   alert('Receipts saved!')
 }

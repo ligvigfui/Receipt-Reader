@@ -6,6 +6,11 @@ public class ReceiptItem
     public Product? Product { get; set; }
     public float Quantity { get; set; }
     public Measurement Measurement { get; set; }
-    public required float PricePerQuantity { get; set; }
+    public float PricePerQuantity { get; set; }
     public float Price => Quantity * PricePerQuantity;
+}
+
+public class ReceiptItemValidated : ReceiptItem
+{
+    public Dictionary<string, string>? ValidationMessages { get; set; }
 }

@@ -5,129 +5,95 @@ namespace RR.Service.Services;
 
 public class DocumentIntelligenceService(
     IOptions<AzureDocumentIntelligenceAPISettings> options,
-    ISecurityService securityService
+    IMeasurementRepository measurementRepository
 ) : IDocumentIntelligenceService
 {
-    readonly AzureDocumentIntelligenceAPISettings AzureSettings = options.Value;
+    readonly string ModelName = options.Value.Model;
+    readonly DocumentAnalysisClient DAClient = new (new Uri(options.Value.Endpoint), new AzureKeyCredential(options.Value.ApiKey));
 
-    public async Task<string> ExtractReceiptDataFromImageAsync(byte[] imageBytes)
+    public async Task<Receipt> ExtractReceiptDataFromImageAsync(Uri imageURI, int? userGroupId)
     {
-        var credential = new AzureKeyCredential(AzureSettings.ApiKey);
-        var client = new DocumentAnalysisClient(new Uri(AzureSettings.Endpoint), credential);
-        using var stream = new MemoryStream(imageBytes);
-        AnalyzeDocumentOperation operation = await client.AnalyzeDocumentAsync(WaitUntil.Completed, "prebuilt-receipt", stream);
-        var receipts = operation.Value;
-        return ExtractReceiptDataFromTextAsync( receipts );
+        var analizeResult = await DAClient.AnalyzeDocumentFromUriAsync(WaitUntil.Completed, ModelName, imageURI);
+        return await MyExtractReceiptDataFromTextAsync(analizeResult, userGroupId);
     }
-    public async Task<string> MyExtractReceiptDataFromTextAsync(AnalyzeResult analyzeResult, int? userGroupId)
+    public async Task<Receipt> ExtractReceiptDataFromImageAsync(byte[] imageBytes, int? userGroupId)
     {
-        foreach (AnalyzedDocument receipt in analyzeResult.Documents)
-        {
-            var transactionDate = receipt.Fields.GetField(FieldType.TransactionDate)?.AsDate();
-            var transactionTime = receipt.Fields.GetField(FieldType.TransactionTime)?.AsTime();
+        using var stream = new MemoryStream(imageBytes);
+        var analizeResult = await DAClient.AnalyzeDocumentAsync(WaitUntil.Completed, ModelName, stream);
+        return await MyExtractReceiptDataFromTextAsync(analizeResult, userGroupId);
+    }
+    async Task<Receipt> MyExtractReceiptDataFromTextAsync(AnalyzeDocumentOperation analizeResult, int? userGroupId)
+    {
+        var receipt = analizeResult.Value.Documents[0];
+        var language = analizeResult.Value.Languages.FirstOrDefault()?.Locale;
+        var transactionDate = receipt.Fields.GetField(FieldType.TransactionDate)?.AsDate();
+        var transactionTime = receipt.Fields.GetField(FieldType.TransactionTime)?.AsTime();
 
-            DateTime? transactionDateTime = (transactionDate, transactionTime) switch
+        DateTime? transactionDateTime = (transactionDate, transactionTime) switch
+        {
+            (DateTimeOffset date, TimeSpan time) => date.Date + time,
+            (DateTimeOffset date, null) => date.Date,
+            (null, TimeSpan time) => DateTime.Today + time,
+            _ => null
+        };
+        var address = receipt.Fields.GetField(FieldType.MerchantAddress)?.AsAddress();
+        var items = receipt.Fields.GetField(FieldType.Items)?.AsList()
+                .Select(item => item.Value.AsDictionary());
+        var receiptItems = new List<ReceiptItem>();
+        var measurementsToGet = new Dictionary<string, List<int>>();
+        var index = -1;
+        foreach (var item in items)
+        {
+            index++;
+            var quantity = (float?)item.GetField(ItemFieldType.Quantity)?.AsDouble();
+            if (quantity is null)
             {
-                (DateTimeOffset date, TimeSpan time) => date.Date + time,
-                (DateTimeOffset date, null) => date.Date,
-                (null, TimeSpan time) => DateTime.Today + time,
-                _ => null
-            };
-            var receiptDBO = new ReceiptDBO()
+                receiptItems.Add(new ReceiptItem()
+                {
+                    Name = item.GetField(ItemFieldType.Description)?.AsString(),
+                    Quantity = 1,
+                    PricePerQuantity = (float)item.GetField(ItemFieldType.TotalPrice).AsDouble()
+                });
+                continue;
+            }
+            var measurement = item.GetField(ItemFieldType.QuantityUnit)?.AsString().ToLower();
+            if (measurementsToGet.TryGetValue(measurement, out var value))
+                value.Add(index);
+            measurementsToGet.Add(measurement, [index]);
+            
+            receiptItems.Add(new ReceiptItem()
             {
-                User = await securityService.GetUserAsync(),
-                GroupId = userGroupId,
-                TransactionDateTime = transactionDateTime,
-                Vendor = new VendorDBO()
+                Name = item.GetField(ItemFieldType.Description)?.AsString(),
+                Quantity = quantity!.Value,
+                PricePerQuantity = (float)item.GetField(ItemFieldType.Price).AsDouble()
+            });
+        }
+        var measurements = await measurementRepository.GetMeasurements(measurementsToGet.Keys.ToList());
+        foreach (var measurement in measurements)
+            foreach (var itemIndex in measurementsToGet[measurement.Symbol.ToLower()])
+                receiptItems[itemIndex].Measurement = measurement;
+
+        return new Receipt()
+        {
+            GroupId = userGroupId,
+            TransactionDateTime = transactionDateTime,
+            Vendor = new Vendor()
+            {
+                VendorHQ = new()
                 {
                     Name = receipt.Fields.GetField(FieldType.MerchantName)?.AsString(),
-                    Address = new()
-                    {
-                        StreetAddress = receipt.Fields.GetField(FieldType.MerchantAddress)?.AsString(),
-                    }
                 },
-                Items = receipt.Fields.GetField(FieldType.Items)?.AsList()
-                    .Select(item => item.Value.AsDictionary())
-                    .Select(item => new ReceiptItemDBO()
-                    {
-                        Product = new ProductDBO()
-                        {
-                            Name = item.GetField(ItemFieldType.Description)?.AsString(),
-                        },
-                        Quantity = (float)item.GetField(ItemFieldType.Quantity)?.AsDouble(),
-                        PricePerQuantity = (float)item.GetField(ItemFieldType.Price)?.AsCurrency().Amount,
-                    }).ToList() ?? [],
-            };
-        }
-        return "";
-    }
-    public string ExtractReceiptDataFromTextAsync(AnalyzeResult analyzeResult)
-    {
-        // https://aka.ms/formrecognizer/receiptfields
-        var sb = new StringBuilder();
-        foreach (AnalyzedDocument receipt in analyzeResult.Documents)
-        {
-            if (receipt.Fields.TryGetValue("MerchantName", out DocumentField merchantNameField))
-            {
-                if (merchantNameField.FieldType == DocumentFieldType.String)
+                Address = new()
                 {
-                    string merchantName = merchantNameField.Value.AsString();
-                    sb.AppendLine($"Merchant Name: '{merchantName}', with confidence {merchantNameField.Confidence}");
+                    Country = address.State,
+                    Region = address.StateDistrict + address.CountryRegion,
+                    PostalCode = address.PostalCode,
+                    City = address.City,
+                    StreetAddress = address.StreetAddress,
                 }
-            }
-
-            if (receipt.Fields.TryGetValue("TransactionDate", out DocumentField transactionDateField))
-            {
-                if (transactionDateField.FieldType == DocumentFieldType.Date)
-                {
-                    var transactionDate = transactionDateField.Value.AsDate();
-                    sb.AppendLine($"Transaction Date: '{transactionDate}', with confidence {transactionDateField.Confidence}");
-                }
-            }
-
-            if (receipt.Fields.TryGetValue("Items", out DocumentField itemsField))
-            {
-                if (itemsField.FieldType == DocumentFieldType.List)
-                {
-                    foreach (DocumentField itemField in itemsField.Value.AsList())
-                    {
-                        sb.AppendLine("Item:");
-                        if (itemField.FieldType == DocumentFieldType.Dictionary)
-                        {
-                            var itemFields = itemField.Value.AsDictionary();
-                            if (itemFields.TryGetValue("Description", out DocumentField itemDescriptionField))
-                            {
-                                if (itemDescriptionField.FieldType == DocumentFieldType.String)
-                                {
-                                    string itemDescription = itemDescriptionField.Value.AsString();
-                                    sb.AppendLine($"  Description: '{itemDescription}', with confidence {itemDescriptionField.Confidence}");
-                                }
-                            }
-                            if (itemFields.TryGetValue("TotalPrice", out DocumentField itemTotalPriceField))
-                            {
-                                if (itemTotalPriceField.FieldType == DocumentFieldType.Currency)
-                                {
-                                    var currency = itemTotalPriceField.Value.AsCurrency();
-                                    double? itemTotalPrice = currency.Amount;
-                                    sb.AppendLine($"  Total Price: '{itemTotalPrice}', with confidence {itemTotalPriceField.Confidence}");
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (receipt.Fields.TryGetValue("Total", out DocumentField totalField))
-            {
-                if (totalField.FieldType == DocumentFieldType.Currency)
-                {
-                    var currency = totalField.Value.AsCurrency();
-                    double? total = currency.Amount;
-                    sb.AppendLine($"Total: '{total}', with confidence '{totalField.Confidence}'");
-                }
-            }
-        }
-        return sb.ToString();
+            },
+            Items = receiptItems
+        };
     }
 }
 public enum ItemFieldType

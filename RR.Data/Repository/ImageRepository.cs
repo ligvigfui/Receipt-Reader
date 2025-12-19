@@ -10,11 +10,11 @@ public class ImageRepository (
         await context.SaveChangesAsync();
         return imageDBO;
     }
-    public async Task<ImageDBO?> GetImageBlobUrlAsync(string fileName, int userShortId)
+    public async Task<ImageDBO?> GetImageAsync(string fileName, int? imageId, int userShortId)
     {
         return await context.Images
             .WhereCanRead(userShortId)
-            .Where(i => i.FileName == fileName)
+            .Where(i => i.FileName == fileName && (imageId == null || i.Id == imageId))
             .FirstOrDefaultAsync();
     }
 }

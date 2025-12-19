@@ -11,3 +11,8 @@ public class Address : IOwnable
     public string StreetAddress { get; set; }
     public string? Note { get; set; }
 }
+
+public class AddressValidated : Address
+{
+    public Dictionary<string, string>? ValidationMessages { get; set; }
+}

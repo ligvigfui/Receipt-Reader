@@ -6,14 +6,39 @@ public class ReceiptController(
     IReceiptService receiptService
 ) : ControllerBase
 {
-    [HttpPost("Create")]
-    public async Task<IActionResult> PostAsync(
+    [HttpPost(nameof(Create))]
+    public async Task<IActionResult> Create(
         [FromBody][Required] Receipt receipt)
     {
         var newReceipt = await receiptService.CreateReceiptAsync(receipt);
-        return CreatedAtAction(nameof(PostAsync), newReceipt);
+        return CreatedAtAction(nameof(Create), newReceipt);
     }
 
+    [HttpPost(nameof(CreateFromSavedImage))]
+    [Produces<ReceiptValidated>]
+    public async Task<IActionResult> CreateFromSavedImage(
+        bool isPublic,
+        string imageName,
+        int? imageId,
+        int? groupId,
+        string? languageCode)
+    {
+        var newReceipt = await receiptService.CreateReceiptFromImageAsync(imageName, imageId, groupId);
+        return CreatedAtAction(nameof(CreateFromSavedImage), newReceipt);
+    }
+
+    [HttpPost(nameof(CreateFromImage))]
+    [Produces<ReceiptValidated>]
+    public async Task<IActionResult> CreateFromImage(
+        [FromQuery] bool isImagePublic,
+        [FromQuery] bool isReceiptPublic,
+        [FromQuery] int? groupId,
+        [FromQuery] string? languageCode,
+        IFormFile image)
+    {
+        var newReceipt = await receiptService.CreateReceiptFromImageAsync(isPublic, groupId, image);
+        return CreatedAtAction(nameof(CreateFromImage), newReceipt);
+    }
     //[HttpGet("Get")]
     //public async Task<IActionResult> GetAsync(
     //    int? groupId = null,

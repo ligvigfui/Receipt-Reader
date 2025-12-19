@@ -8,3 +8,8 @@ public class VendorHQ : IOwnable
     public Address? Address { get; set; }
     public string? TaxNumber { get; set; }
 }
+
+public class VendorHQValidated : VendorHQ
+{
+    public Dictionary<string, string>? ValidationMessages { get; set; }
+}
